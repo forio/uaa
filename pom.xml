@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.cloudfoundry.identity</groupId>
+	<groupId>com.forio.uaa</groupId>
 	<artifactId>cloudfoundry-identity-parent</artifactId>
 	<name>CloudFoundry Identity - Parent</name>
     <description>The UAA is the Identity Management Solution for Cloud Foundry</description>
@@ -66,6 +66,21 @@
 			</repository>
 		</repositories>
 	  </profile>
+		<profile>
+			<id>forio</id>
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>forio-snapshots</id>
+                    <name>forio-snapshots</name>
+                    <url>http://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
+                </snapshotRepository>
+                <repository>
+                    <id>forio-releases</id>
+                    <name>forio-releases</name>
+                    <url>http://dev.forio.com/repository/content/repositories/libs-releases-local</url>
+                </repository>
+            </distributionManagement>
+		</profile>
 		<profile>
 			<id>central</id>
 			<distributionManagement>
