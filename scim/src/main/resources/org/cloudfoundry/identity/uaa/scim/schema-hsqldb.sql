@@ -15,6 +15,9 @@
 CREATE TABLE GROUPS (
   id VARCHAR(36) not null primary key,
   displayName VARCHAR(255) not null,
+  organization VARCHAR(255) null,
+  event VARCHAR(255) null,
+  eventDate TIMESTAMP null,
   created TIMESTAMP default current_timestamp not null,
   lastModified TIMESTAMP default current_timestamp not null,
   version INTEGER default 0 not null,

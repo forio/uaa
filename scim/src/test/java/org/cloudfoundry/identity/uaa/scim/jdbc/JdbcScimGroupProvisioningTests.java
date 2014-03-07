@@ -10,7 +10,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.cloudfoundry.identity.uaa.rest.jdbc.DefaultLimitSqlAdapter;
 import org.cloudfoundry.identity.uaa.rest.jdbc.JdbcPagingListFactory;
 import org.cloudfoundry.identity.uaa.rest.jdbc.LimitSqlAdapter;
 import org.cloudfoundry.identity.uaa.scim.ScimGroup;
@@ -36,194 +35,209 @@ import org.springframework.util.StringUtils;
 @ProfileValueSourceConfiguration(NullSafeSystemProfileValueSource.class)
 public class JdbcScimGroupProvisioningTests {
 
-	Log logger = LogFactory.getLog(getClass());
+    Log logger = LogFactory.getLog(getClass());
 
-	@Autowired
-	private DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-	private JdbcTemplate template;
+    private JdbcTemplate template;
 
-	@Autowired
-	private LimitSqlAdapter limitSqlAdapter;
+    @Autowired
+    private LimitSqlAdapter limitSqlAdapter;
 
-	private JdbcScimGroupProvisioning dao;
+    private JdbcScimGroupProvisioning dao;
 
-	private static final String addGroupSqlFormat = "insert into groups (id, displayName) values ('%s','%s')";
+    private static final String addGroupSqlFormat = "insert into groups (id, displayName) values ('%s','%s')";
 
-	private static final String SQL_INJECTION_FIELDS = "displayName,version,created,lastModified";
+    private static final String addGroupDetailSqlFormat = "insert into groups (id, displayName, organization, event) values ('%s','%s','%s','%s')";
 
-	private int existingGroupCount = -1;
+    private static final String SQL_INJECTION_FIELDS = "displayName,version,created,lastModified";
 
-	@Before
-	public void createDatasource() {
+    private int existingGroupCount = -1;
 
-		template = new JdbcTemplate(dataSource);
+    @Before
+    public void createDatasource() {
 
-		dao = new JdbcScimGroupProvisioning(template, new JdbcPagingListFactory(template, limitSqlAdapter));
+        template = new JdbcTemplate(dataSource);
 
-		addGroup("g1", "uaa.user");
-		addGroup("g2", "uaa.admin");
-		addGroup("g3", "openid");
+        dao = new JdbcScimGroupProvisioning(template, new JdbcPagingListFactory(template, limitSqlAdapter));
 
-		validateGroupCount(3);
-	}
+        addGroup("g1", "uaa.user");
+        addGroup("g2", "uaa.admin");
+        addGroup("g3", "openid");
 
-	@After
-	public void cleanupDataSource() throws Exception {
-		TestUtils.deleteFrom(dataSource, "groups");
-		validateGroupCount(0);
+        addGroupDetailed("n4", "testgroup1", "org", "workshop");
+        addGroupDetailed("n5", "testgroup2", "org", "other");
+        addGroupDetailed("n6", "testgroup3", "institute", "workshop");
 
-		TestUtils.deleteFrom(dataSource, "group_membership");
-		assertEquals(0, template.queryForInt("select count(*) from group_membership"));
-	}
+        validateGroupCount(6);
+    }
 
-	private void validateGroupCount(int expected) {
-		existingGroupCount = template.queryForInt("select count(id) from groups");
-		assertEquals(expected, existingGroupCount);
-	}
+    @After
+    public void cleanupDataSource() throws Exception {
+        TestUtils.deleteFrom(dataSource, "groups");
+        validateGroupCount(0);
 
-	private void validateGroup(ScimGroup group, String name) {
-		assertNotNull(group);
-		assertNotNull(group.getId());
-		assertNotNull(group.getDisplayName());
-		if (StringUtils.hasText(name)) {
-			assertEquals(name, group.getDisplayName());
-		}
-	}
+        TestUtils.deleteFrom(dataSource, "group_membership");
+        assertEquals(0, template.queryForInt("select count(*) from group_membership"));
+    }
 
-	@Test
-	public void canRetrieveGroups() throws Exception {
-		List<ScimGroup> groups = dao.retrieveAll();
-		logger.debug(groups);
-		assertEquals(3, groups.size());
-		for (ScimGroup g : groups) {
-			validateGroup(g, null);
-		}
-	}
+    private void validateGroupCount(int expected) {
+        existingGroupCount = template.queryForInt("select count(id) from groups");
+        assertEquals(expected, existingGroupCount);
+    }
 
-	@Test
-	public void canRetrieveGroupsWithFilter() throws Exception {
-		assertEquals(1, dao.query("displayName eq 'uaa.user'").size());
-		assertEquals(3, dao.query("displayName pr").size());
-		assertEquals(1, dao.query("displayName eq \"openid\"").size());
-		assertEquals(1, dao.query("DISPLAYNAMe eq 'uaa.admin'").size());
-		assertEquals(1, dao.query("displayName EQ 'openid'").size());
-		assertEquals(1, dao.query("displayName eq 'Openid'").size());
-		assertEquals(1, dao.query("displayName co 'user'").size());
-		assertEquals(3, dao.query("id sw 'g'").size());
-		assertEquals(3, dao.query("displayName gt 'oauth'").size());
-		assertEquals(0, dao.query("displayName lt 'oauth'").size());
-		assertEquals(1, dao.query("displayName eq 'openid' and meta.version eq 0").size());
-		assertEquals(3, dao.query("meta.created gt '1970-01-01T00:00:00.000Z'").size());
-		assertEquals(3, dao.query("displayName pr and id co 'g'").size());
-		assertEquals(2, dao.query("displayName eq 'openid' or displayName co '.user'").size());
-		assertEquals(3, dao.query("displayName eq 'foo' or id sw 'g'").size());
-	}
+    private void validateGroup(ScimGroup group, String name) {
+        assertNotNull(group);
+        assertNotNull(group.getId());
+        assertNotNull(group.getDisplayName());
+        if (StringUtils.hasText(name)) {
+            assertEquals(name, group.getDisplayName());
+        }
+    }
 
-	@Test
-	public void canRetrieveGroupsWithFilterAndSortBy() {
-		assertEquals(3, dao.query("displayName pr", "id", true).size());
-		assertEquals(1, dao.query("id co '2'", "displayName", false).size());
-	}
+    @Test
+    public void canRetrieveGroups() throws Exception {
+        List<ScimGroup> groups = dao.retrieveAll();
+        logger.debug(groups);
+        assertEquals(6, groups.size());
+        for (ScimGroup g : groups) {
+            validateGroup(g, null);
+        }
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void cannotRetrieveGroupsWithIllegalQuotesFilter() {
-		assertEquals(1, dao.query("displayName eq 'bar").size());
-	}
+    @Test
+    public void canRetrieveGroupsWithFilter() throws Exception {
+        assertEquals(1, dao.query("displayName eq 'uaa.user'").size());
+        assertEquals(6, dao.query("displayName pr").size());
+        assertEquals(1, dao.query("displayName eq \"openid\"").size());
+        assertEquals(1, dao.query("DISPLAYNAMe eq 'uaa.admin'").size());
+        assertEquals(1, dao.query("displayName EQ 'openid'").size());
+        assertEquals(1, dao.query("displayName eq 'Openid'").size());
+        assertEquals(1, dao.query("displayName co 'user'").size());
+        assertEquals(3, dao.query("id sw 'g'").size());
+        assertEquals(6, dao.query("displayName gt 'oauth'").size());
+        assertEquals(0, dao.query("displayName lt 'oauth'").size());
+        assertEquals(1, dao.query("displayName eq 'openid' and meta.version eq 0").size());
+        assertEquals(6, dao.query("meta.created gt '1970-01-01T00:00:00.000Z'").size());
+        assertEquals(3, dao.query("displayName pr and id co 'g'").size());
+        assertEquals(2, dao.query("displayName eq 'openid' or displayName co '.user'").size());
+        assertEquals(3, dao.query("displayName eq 'foo' or id sw 'g'").size());
 
-	@Test(expected = IllegalArgumentException.class)
-	public void cannotRetrieveGroupsWithMissingQuotesFilter() {
-		assertEquals(0, dao.query("displayName eq bar").size());
-	}
+        assertEquals(2, dao.query("organization eq 'org'").size());
+        assertEquals(2, dao.query("event eq 'workshop'").size());
 
-	@Test(expected = IllegalArgumentException.class)
-	public void cannotRetrieveGroupsWithInvalidFieldsFilter() {
-		assertEquals(1, dao.query("name eq 'openid'").size());
-	}
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void cannotRetrieveGroupsWithWrongFilter() {
-		assertEquals(0, dao.query("displayName pr 'r'").size());
-	}
+    @Test
+    public void canRetrieveGroupsWithFilterAndSortBy() {
+        assertEquals(6, dao.query("displayName pr", "id", true).size());
+        assertEquals(1, dao.query("id co '2'", "displayName", false).size());
+    }
 
-	@Test
-	public void canRetrieveGroup() throws Exception {
-		ScimGroup group = dao.retrieve("g1");
-		validateGroup(group, "uaa.user");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotRetrieveGroupsWithIllegalQuotesFilter() {
+        assertEquals(1, dao.query("displayName eq 'bar").size());
+    }
 
-	@Test(expected = ScimResourceNotFoundException.class)
-	public void cannotRetrieveNonExistentGroup() {
-		dao.retrieve("invalidgroup");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotRetrieveGroupsWithMissingQuotesFilter() {
+        assertEquals(0, dao.query("displayName eq bar").size());
+    }
 
-	@Test
-	public void canCreateGroup() throws Exception {
-		ScimGroup g = new ScimGroup("", "test.1");
-		ScimGroupMember m1 = new ScimGroupMember("m1", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_MEMBER);
-		ScimGroupMember m2 = new ScimGroupMember("m2", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_ADMIN);
-		g.setMembers(Arrays.asList(m1, m2));
-		g = dao.create(g);
-		logger.debug(g);
-		validateGroupCount(4);
-		validateGroup(g, "test.1");
-	}
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotRetrieveGroupsWithInvalidFieldsFilter() {
+        assertEquals(1, dao.query("name eq 'openid'").size());
+    }
 
-	@Test
-	public void canUpdateGroup() throws Exception {
-		ScimGroup g = dao.retrieve("g1");
-		logger.debug(g);
-		assertEquals("uaa.user", g.getDisplayName());
+    @Test(expected = IllegalArgumentException.class)
+    public void cannotRetrieveGroupsWithWrongFilter() {
+        assertEquals(0, dao.query("displayName pr 'r'").size());
+    }
 
-		ScimGroupMember m1 = new ScimGroupMember("m1", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_MEMBER);
-		ScimGroupMember m2 = new ScimGroupMember("g2", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_ADMIN);
-		g.setMembers(Arrays.asList(m1, m2));
-		g.setDisplayName("uaa.none");
+    @Test
+    public void canRetrieveGroup() throws Exception {
+        ScimGroup group = dao.retrieve("g1");
+        validateGroup(group, "uaa.user");
+    }
 
-		g = dao.update("g1", g);
+    @Test(expected = ScimResourceNotFoundException.class)
+    public void cannotRetrieveNonExistentGroup() {
+        dao.retrieve("invalidgroup");
+    }
 
-		g = dao.retrieve("g1");
-		validateGroup(g, "uaa.none");
-	}
+    @Test
+    public void canCreateGroup() throws Exception {
+        ScimGroup g = new ScimGroup("", "test.1");
+        ScimGroupMember m1 = new ScimGroupMember("m1", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_MEMBER);
+        ScimGroupMember m2 = new ScimGroupMember("m2", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_ADMIN);
+        g.setMembers(Arrays.asList(m1, m2));
+        g = dao.create(g);
+        logger.debug(g);
+        validateGroupCount(7);
+        validateGroup(g, "test.1");
+    }
 
-	@Test
-	public void canRemoveGroup() throws Exception {
-		dao.delete("g1", 0);
-		validateGroupCount(2);
-	}
+    @Test
+    public void canUpdateGroup() throws Exception {
+        ScimGroup g = dao.retrieve("g1");
+        logger.debug(g);
+        assertEquals("uaa.user", g.getDisplayName());
 
-	private void addGroup(String id, String name) {
-		TestUtils.assertNoSuchUser(template, "id", id);
-		template.execute(String.format(addGroupSqlFormat, id, name));
-	}
+        ScimGroupMember m1 = new ScimGroupMember("m1", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_MEMBER);
+        ScimGroupMember m2 = new ScimGroupMember("g2", ScimGroupMember.Type.USER, ScimGroupMember.GROUP_ADMIN);
+        g.setMembers(Arrays.asList(m1, m2));
+        g.setDisplayName("uaa.none");
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sqlInjectionAttack1Fails() {
-		dao.query("displayName='something'; select " + SQL_INJECTION_FIELDS
-															  + " from groups where displayName='something'");
-	}
+        g = dao.update("g1", g);
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sqlInjectionAttack2Fails() {
-		dao.query("displayName gt 'a'; select " + SQL_INJECTION_FIELDS
-								   + " from groups where displayName='something'");
-	}
+        g = dao.retrieve("g1");
+        validateGroup(g, "uaa.none");
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sqlInjectionAttack3Fails() {
-		dao.query("displayName eq 'something'; select " + SQL_INJECTION_FIELDS
-								   + " from groups where displayName='something'");
-	}
+    @Test
+    public void canRemoveGroup() throws Exception {
+        dao.delete("g1", 0);
+        validateGroupCount(5);
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sqlInjectionAttack4Fails() {
-		dao.query("displayName eq 'something'; select id from groups where id='''; select " + SQL_INJECTION_FIELDS
-								   + " from groups where displayName='something'");
-	}
+    private void addGroup(String id, String name) {
+        TestUtils.assertNoSuchUser(template, "id", id);
+        template.execute(String.format(addGroupSqlFormat, id, name));
+    }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void sqlInjectionAttack5Fails() {
-		dao.query("displayName eq 'something''; select " + SQL_INJECTION_FIELDS
-								   + " from groups where displayName='something''");
-	}
+    private void addGroupDetailed(String id, String name, String organization, String event) {
+        TestUtils.assertNoSuchUser(template, "id", id);
+        template.execute(String.format(addGroupDetailSqlFormat, id, name, organization, event));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sqlInjectionAttack1Fails() {
+        dao.query("displayName='something'; select " + SQL_INJECTION_FIELDS
+                                                              + " from groups where displayName='something'");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sqlInjectionAttack2Fails() {
+        dao.query("displayName gt 'a'; select " + SQL_INJECTION_FIELDS
+                                   + " from groups where displayName='something'");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sqlInjectionAttack3Fails() {
+        dao.query("displayName eq 'something'; select " + SQL_INJECTION_FIELDS
+                                   + " from groups where displayName='something'");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sqlInjectionAttack4Fails() {
+        dao.query("displayName eq 'something'; select id from groups where id='''; select " + SQL_INJECTION_FIELDS
+                                   + " from groups where displayName='something'");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void sqlInjectionAttack5Fails() {
+        dao.query("displayName eq 'something''; select " + SQL_INJECTION_FIELDS
+                                   + " from groups where displayName='something''");
+    }
 }
