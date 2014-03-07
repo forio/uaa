@@ -64,7 +64,7 @@ create table oauth_code (
   code VARCHAR(255),
   authentication BLOB
 ) ;
- 
+
 CREATE TABLE authz_approvals (
   userName VARCHAR(36) not null,
   clientId VARCHAR(36) not null,
@@ -78,6 +78,9 @@ CREATE TABLE authz_approvals (
 CREATE TABLE groups (
   id VARCHAR(36) not null primary key,
   displayName VARCHAR(255) not null,
+  organization VARCHAR(255) null,
+  event VARCHAR(255) null,
+  eventDate TIMESTAMP null,
   created TIMESTAMP default current_timestamp not null,
   lastModified TIMESTAMP null,
   version INTEGER default 0 not null,

@@ -42,7 +42,13 @@ public class ScimGroupJsonDeserializer extends JsonDeserializer<ScimGroup> {
                 } else if ("eventDate".equalsIgnoreCase(fieldName)) {
                     try
                     {
-                        DateTime dt = ISODateTimeFormat.dateTime().parseDateTime(jp.readValueAs(String.class));
+                        // remove time
+                        String dateTimeString = jp.readValueAs(String.class);
+                        if (dateTimeString.contains("T"))
+                        {
+                            dateTimeString = dateTimeString.substring(0, dateTimeString.indexOf("T"));
+                        }
+                        DateTime dt = ISODateTimeFormat.dateParser().parseDateTime(dateTimeString);
                         group.setEventDate(dt.toDate());
                     } catch (IllegalArgumentException e) {
                         throw new RuntimeException(e);
