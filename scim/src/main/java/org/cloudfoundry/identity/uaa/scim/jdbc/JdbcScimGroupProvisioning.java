@@ -32,13 +32,13 @@ public class JdbcScimGroupProvisioning extends AbstractQueryable<ScimGroup> impl
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    public static final String GROUP_FIELDS = "id,displayName,organization,event,eventDate,created,lastModified,version";
+    public static final String GROUP_FIELDS = "id,displayName,organization,event,groupType,eventDate,created,lastModified,version";
 
     public static final String GROUP_TABLE = "groups";
 
-    public static final String ADD_GROUP_SQL = String.format("insert into %s ( %s ) values (?,?,?,?,?,?,?,?)", GROUP_TABLE, GROUP_FIELDS);
+    public static final String ADD_GROUP_SQL = String.format("insert into %s ( %s ) values (?,?,?,?,?,?,?,?,?)", GROUP_TABLE, GROUP_FIELDS);
 
-    public static final String UPDATE_GROUP_SQL = String.format("update %s set version=?, displayName=?, organization=?, event=?, eventDate=?, lastModified=? where id=? and version=?", GROUP_TABLE);
+    public static final String UPDATE_GROUP_SQL = String.format("update %s set version=?, displayName=?, organization=?, event=?, groupType=?, eventDate=?, lastModified=? where id=? and version=?", GROUP_TABLE);
 
     public static final String GET_GROUPS_SQL = String.format("select %s from %s", GROUP_FIELDS, GROUP_TABLE);
 
@@ -87,17 +87,18 @@ public class JdbcScimGroupProvisioning extends AbstractQueryable<ScimGroup> impl
                     ps.setString(2, group.getDisplayName());
                     ps.setString(3, group.getOrganization());
                     ps.setString(4,  group.getEvent());
+                    ps.setString(5,  group.getType());
                     if (group.getEventDate() == null)
                     {
-                        ps.setTimestamp(5, null);
+                        ps.setTimestamp(6, null);
                     }
                     else
                     {
-                        ps.setTimestamp(5, new Timestamp(group.getEventDate().getTime()));
+                        ps.setTimestamp(6, new Timestamp(group.getEventDate().getTime()));
                     }
-                    ps.setTimestamp(6, new Timestamp(new Date().getTime()));
                     ps.setTimestamp(7, new Timestamp(new Date().getTime()));
-                    ps.setInt(8, group.getVersion());
+                    ps.setTimestamp(8, new Timestamp(new Date().getTime()));
+                    ps.setInt(9, group.getVersion());
                 }
             });
         } catch (DuplicateKeyException ex) {
@@ -116,17 +117,18 @@ public class JdbcScimGroupProvisioning extends AbstractQueryable<ScimGroup> impl
                     ps.setString(2, group.getDisplayName());
                     ps.setString(3, group.getOrganization());
                     ps.setString(4,  group.getEvent());
+                    ps.setString(5,  group.getType());
                     if (group.getEventDate() == null)
                     {
-                        ps.setTimestamp(5, null);
+                        ps.setTimestamp(6, null);
                     }
                     else
                     {
-                        ps.setTimestamp(5, new Timestamp(group.getEventDate().getTime()));
+                        ps.setTimestamp(6, new Timestamp(group.getEventDate().getTime()));
                     }
-                    ps.setTimestamp(6, new Timestamp(new Date().getTime()));
-                    ps.setString(7, id);
-                    ps.setInt(8, group.getVersion());
+                    ps.setTimestamp(7, new Timestamp(new Date().getTime()));
+                    ps.setString(8, id);
+                    ps.setInt(9, group.getVersion());
                 }
             });
             if (updated != 1) {
@@ -161,16 +163,18 @@ public class JdbcScimGroupProvisioning extends AbstractQueryable<ScimGroup> impl
             String name = rs.getString(2);
             String organization = rs.getString(3);
             String event = rs.getString(4);
-            Date eventDate = rs.getTimestamp(5);
-            Date created = rs.getTimestamp(6);
-            Date modified = rs.getTimestamp(7);
-            int version = rs.getInt(8);
+            String type = rs.getString(5);
+            Date eventDate = rs.getTimestamp(6);
+            Date created = rs.getTimestamp(7);
+            Date modified = rs.getTimestamp(8);
+            int version = rs.getInt(9);
 
             ScimGroup group = new ScimGroup(id, name);
             ScimMeta meta = new ScimMeta(created, modified, version);
             group.setMeta(meta);
             group.setOrganization(organization);
             group.setEvent(event);
+            group.setType(type);
             group.setEventDate(eventDate);
             return group;
         }

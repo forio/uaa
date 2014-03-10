@@ -17,6 +17,7 @@ CREATE TABLE GROUPS (
   displayName VARCHAR(255) not null,
   organization VARCHAR(255) null,
   event VARCHAR(255) null,
+  groupType VARCHAR(255) null,
   eventDate TIMESTAMP null,
   created TIMESTAMP default current_timestamp not null,
   lastModified TIMESTAMP default current_timestamp not null,
