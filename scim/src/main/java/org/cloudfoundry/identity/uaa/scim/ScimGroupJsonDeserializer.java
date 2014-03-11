@@ -39,8 +39,6 @@ public class ScimGroupJsonDeserializer extends JsonDeserializer<ScimGroup> {
                     group.setOrganization(jp.readValueAs(String.class));
                 } else if ("event".equalsIgnoreCase(fieldName)) {
                     group.setEvent(jp.readValueAs(String.class));
-                } else if ("type".equalsIgnoreCase(fieldName)) {
-                    group.setType(jp.readValueAs(String.class));
                 } else if ("eventDate".equalsIgnoreCase(fieldName)) {
                     try
                     {

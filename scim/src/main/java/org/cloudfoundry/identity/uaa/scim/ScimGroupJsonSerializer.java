@@ -44,7 +44,6 @@ public class ScimGroupJsonSerializer extends JsonSerializer<ScimGroup> {
         // new fields
         addNonNull(groupJson, "organization", group.getOrganization());
         addNonNull(groupJson, "event", group.getEvent());
-        addNonNull(groupJson, "type", group.getType());
         addNonNull(groupJson, "eventDate", convertDate(group.getEventDate()));
 
         for (Map.Entry<String, List<ScimGroupMember>> entry : roles.entrySet()) {

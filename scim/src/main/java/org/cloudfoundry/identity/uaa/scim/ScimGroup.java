@@ -16,7 +16,6 @@ public class ScimGroup extends ScimCore {
     private String organization;
     private String event;
     private Date eventDate;
-    private String type;
 
     public String getDisplayName() {
         return displayName;
@@ -62,16 +61,6 @@ public class ScimGroup extends ScimCore {
     public void setEventDate(Date date)
     {
         this.eventDate = date;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
     }
 
     public ScimGroup() {
