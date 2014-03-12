@@ -3,6 +3,7 @@ package org.cloudfoundry.identity.uaa.scim;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -16,6 +17,10 @@ public class ScimGroup extends ScimCore {
     private String organization;
     private String event;
     private Date eventDate;
+
+    // used to temporary hold role when group is retrieved for a particular member
+    @JsonIgnore
+    private String memberRole;
 
     public String getDisplayName() {
         return displayName;
@@ -61,6 +66,16 @@ public class ScimGroup extends ScimCore {
     public void setEventDate(Date date)
     {
         this.eventDate = date;
+    }
+
+    public String getMemberRole()
+    {
+        return memberRole;
+    }
+
+    public void setMemberRole(String memberRole)
+    {
+        this.memberRole = memberRole;
     }
 
     public ScimGroup() {

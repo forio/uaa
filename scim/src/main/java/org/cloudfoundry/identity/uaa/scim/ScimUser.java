@@ -27,406 +27,418 @@ import org.springframework.util.Assert;
 
 /**
  * Object to hold SCIM data for Jackson to map to and from JSON
- * 
+ *
  * See the <a href="http://www.simplecloud.info/specs/draft-scim-core-schema-02.html">SCIM user schema</a>.
- * 
+ *
  * @author Luke Taylor
  */
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonDeserialize(using = ScimUserJsonDeserializer.class)
 public final class ScimUser extends ScimCore {
 
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-	public static final class Group {
-		String value;
-		
-		String display;
-
-		public static enum Type { DIRECT, INDIRECT };
-		Type type;
-
-		public Type getType() {
-			return type;
-		}
-
-		public void setType(Type type) {
-			this.type = type;
-		}
-
-		public Group() {
-			this(null, null);
-		}
-		
-		public Group(String value, String display) {
-			this(value, display, Type.DIRECT);
-		}
-
-		public Group(String value, String display, Type type) {
-			this.value = value;
-			this.display = display;
-			this.type = type;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-		public String getDisplay() {
-			return display;
-		}
-
-		public void setDisplay(String display) {
-			this.display = display;
-		}
-
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + ((display == null) ? 0 : display.hashCode());
-			result = prime * result + ((value == null) ? 0 : value.hashCode());
-			result = prime * result + ((type == null) ? 0 : type.hashCode());
-			return result;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Group other = (Group) obj;
-			if (display == null) {
-				if (other.display != null)
-					return false;
-			}
-			else if (!display.equals(other.display))
-				return false;
-			if (value == null) {
-				if (other.value != null)
-					return false;
-			}
-			else if (!value.equals(other.value))
-				return false;
-			return type == other.type;
-		}
-
-		@Override
-		public String toString() {
-			return String.format("(id: %s, name: %s, type: %s)", value, display, type);
-		}
-	}
-
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-	public static final class Name {
-		String formatted;
-
-		String familyName;
-
-		String givenName;
-
-		String middleName;
-
-		String honorificPrefix;
-
-		String honorificSuffix;
-
-		public Name() {
-		}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    public static final class Group {
+        String value;
+
+        String display;
+
+        String applicationRole;
+
+        public static enum Type { DIRECT, INDIRECT };
+        Type type;
+
+        public Type getType() {
+            return type;
+        }
+
+        public void setType(Type type) {
+            this.type = type;
+        }
+
+        public Group() {
+            this(null, null);
+        }
+
+        public Group(String value, String display) {
+            this(value, display, Type.DIRECT);
+        }
+
+        public Group(String value, String display, Type type) {
+            this.value = value;
+            this.display = display;
+            this.type = type;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public String getDisplay() {
+            return display;
+        }
+
+        public void setDisplay(String display) {
+            this.display = display;
+        }
+
+        public String getApplicationRole()
+        {
+            return applicationRole;
+        }
+
+        public void setApplicationRole(String applicationRole)
+        {
+            this.applicationRole = applicationRole;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((display == null) ? 0 : display.hashCode());
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            result = prime * result + ((type == null) ? 0 : type.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Group other = (Group) obj;
+            if (display == null) {
+                if (other.display != null)
+                    return false;
+            }
+            else if (!display.equals(other.display))
+                return false;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            }
+            else if (!value.equals(other.value))
+                return false;
+            return type == other.type;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("(id: %s, name: %s, type: %s)", value, display, type);
+        }
+    }
+
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    public static final class Name {
+        String formatted;
 
-		public Name(String givenName, String familyName) {
-			this.givenName = givenName;
-			this.familyName = familyName;
-			this.formatted = givenName + " " + familyName;
-		}
+        String familyName;
 
-		public String getFormatted() {
-			return formatted;
-		}
+        String givenName;
 
-		public void setFormatted(String formatted) {
-			this.formatted = formatted;
-		}
+        String middleName;
 
-		public String getFamilyName() {
-			return familyName;
-		}
+        String honorificPrefix;
 
-		public void setFamilyName(String familyName) {
-			this.familyName = familyName;
-		}
+        String honorificSuffix;
 
-		public String getGivenName() {
-			return givenName;
-		}
+        public Name() {
+        }
 
-		public void setGivenName(String givenName) {
-			this.givenName = givenName;
-		}
+        public Name(String givenName, String familyName) {
+            this.givenName = givenName;
+            this.familyName = familyName;
+            this.formatted = givenName + " " + familyName;
+        }
 
-		public String getMiddleName() {
-			return middleName;
-		}
+        public String getFormatted() {
+            return formatted;
+        }
 
-		public void setMiddleName(String middleName) {
-			this.middleName = middleName;
-		}
+        public void setFormatted(String formatted) {
+            this.formatted = formatted;
+        }
 
-		public String getHonorificPrefix() {
-			return honorificPrefix;
-		}
+        public String getFamilyName() {
+            return familyName;
+        }
 
-		public void setHonorificPrefix(String honorificPrefix) {
-			this.honorificPrefix = honorificPrefix;
-		}
+        public void setFamilyName(String familyName) {
+            this.familyName = familyName;
+        }
 
-		public String getHonorificSuffix() {
-			return honorificSuffix;
-		}
+        public String getGivenName() {
+            return givenName;
+        }
 
-		public void setHonorificSuffix(String honorificSuffix) {
-			this.honorificSuffix = honorificSuffix;
-		}
+        public void setGivenName(String givenName) {
+            this.givenName = givenName;
+        }
 
-	}
+        public String getMiddleName() {
+            return middleName;
+        }
 
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
-	public static final class Email {
-		private String value;
+        public void setMiddleName(String middleName) {
+            this.middleName = middleName;
+        }
 
-		// this should probably be an enum
-		private String type;
+        public String getHonorificPrefix() {
+            return honorificPrefix;
+        }
 
-		private boolean primary = false;
+        public void setHonorificPrefix(String honorificPrefix) {
+            this.honorificPrefix = honorificPrefix;
+        }
 
-		public String getValue() {
-			return value;
-		}
+        public String getHonorificSuffix() {
+            return honorificSuffix;
+        }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
+        public void setHonorificSuffix(String honorificSuffix) {
+            this.honorificSuffix = honorificSuffix;
+        }
 
-		public String getType() {
-			return type;
-		}
+    }
 
-		public void setType(String type) {
-			this.type = type;
-		}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
+    public static final class Email {
+        private String value;
 
-		public void setPrimary(boolean primary) {
-			this.primary = primary;
-		}
+        // this should probably be an enum
+        private String type;
 
-		public boolean isPrimary() {
-			return primary;
-		}
-	}
+        private boolean primary = false;
 
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
-	public static final class PhoneNumber {
-		private String value;
+        public String getValue() {
+            return value;
+        }
 
-		// this should probably be an enum
-		private String type;
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-		public String getValue() {
-			return value;
-		}
+        public String getType() {
+            return type;
+        }
 
-		public void setValue(String value) {
-			this.value = value;
-		}
+        public void setType(String type) {
+            this.type = type;
+        }
 
-		public String getType() {
-			return type;
-		}
+        public void setPrimary(boolean primary) {
+            this.primary = primary;
+        }
 
-		public void setType(String type) {
-			this.type = type;
-		}
+        public boolean isPrimary() {
+            return primary;
+        }
+    }
 
-	}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_DEFAULT)
+    public static final class PhoneNumber {
+        private String value;
 
-	private String userName;
+        // this should probably be an enum
+        private String type;
 
-	private Name name;
+        public String getValue() {
+            return value;
+        }
 
-	private List<Email> emails;
+        public void setValue(String value) {
+            this.value = value;
+        }
 
-	private Set<Group> groups;
+        public String getType() {
+            return type;
+        }
 
-	private Set<Approval> approvals;
+        public void setType(String type) {
+            this.type = type;
+        }
 
-	private List<PhoneNumber> phoneNumbers;
+    }
 
-	private String displayName;
+    private String userName;
 
-	private String nickName;
+    private Name name;
 
-	private String profileUrl;
+    private List<Email> emails;
 
-	private String title;;
+    private Set<Group> groups;
 
-	private String userType;
+    private Set<Approval> approvals;
 
-	private String preferredLanguage;
+    private List<PhoneNumber> phoneNumbers;
 
-	private String locale;
+    private String displayName;
 
-	private String timezone;
+    private String nickName;
 
-	private boolean active = true;
-	
-	private boolean verified = false;
+    private String profileUrl;
 
-	@JsonProperty
-	private String password;
+    private String title;;
 
-	public ScimUser() { }
+    private String userType;
 
-	public ScimUser(String id, String userName, String givenName, String familyName) {
-		super(id);
-		this.userName = userName;
-		this.name = new Name(givenName, familyName);
-	}
+    private String preferredLanguage;
 
-	public String getUserName() {
-		return userName;
-	}
+    private String locale;
 
-	public String getPassword() {
-		return password;
-	}
+    private String timezone;
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    private boolean active = true;
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    private boolean verified = false;
 
-	public Name getName() {
-		return name;
-	}
+    @JsonProperty
+    private String password;
 
-	public void setName(Name name) {
-		this.name = name;
-	}
+    public ScimUser() { }
 
-	public List<Email> getEmails() {
-		return emails;
-	}
+    public ScimUser(String id, String userName, String givenName, String familyName) {
+        super(id);
+        this.userName = userName;
+        this.name = new Name(givenName, familyName);
+    }
 
-	public void setEmails(List<Email> emails) {
-		this.emails = emails;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public Set<Approval> getApprovals() {
-		return approvals;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setApprovals(Set<Approval> approvals) {
-		this.approvals = approvals;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Set<Group> getGroups() {
-		return groups;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public void setGroups(Collection<Group> groups) {
-		this.groups = new LinkedHashSet<Group>(groups);
-	}
+    public Name getName() {
+        return name;
+    }
 
-	public List<PhoneNumber> getPhoneNumbers() {
-		return phoneNumbers;
-	}
+    public void setName(Name name) {
+        this.name = name;
+    }
 
-	public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
-		this.phoneNumbers = phoneNumbers;
-	}
+    public List<Email> getEmails() {
+        return emails;
+    }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    public void setEmails(List<Email> emails) {
+        this.emails = emails;
+    }
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
+    public Set<Approval> getApprovals() {
+        return approvals;
+    }
 
-	public String getNickName() {
-		return nickName;
-	}
+    public void setApprovals(Set<Approval> approvals) {
+        this.approvals = approvals;
+    }
 
-	public void setNickName(String nickName) {
-		this.nickName = nickName;
-	}
+    public Set<Group> getGroups() {
+        return groups;
+    }
 
-	public String getProfileUrl() {
-		return profileUrl;
-	}
+    public void setGroups(Collection<Group> groups) {
+        this.groups = new LinkedHashSet<Group>(groups);
+    }
 
-	public void setProfileUrl(String profileUrl) {
-		this.profileUrl = profileUrl;
-	}
+    public List<PhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	public String getUserType() {
-		return userType;
-	}
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-	public void setUserType(String userType) {
-		this.userType = userType;
-	}
+    public String getNickName() {
+        return nickName;
+    }
 
-	public String getPreferredLanguage() {
-		return preferredLanguage;
-	}
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
-	public void setPreferredLanguage(String preferredLanguage) {
-		this.preferredLanguage = preferredLanguage;
-	}
+    public String getProfileUrl() {
+        return profileUrl;
+    }
 
-	public String getLocale() {
-		return locale;
-	}
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
 
-	public void setLocale(String locale) {
-		this.locale = locale;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public String getTimezone() {
-		return timezone;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public void setTimezone(String timezone) {
-		this.timezone = timezone;
-	}
+    public String getUserType() {
+        return userType;
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-	
-	public boolean isVerified() {
+    public String getPreferredLanguage() {
+        return preferredLanguage;
+    }
+
+    public void setPreferredLanguage(String preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isVerified() {
         return verified;
     }
 
@@ -435,108 +447,108 @@ public final class ScimUser extends ScimCore {
     }
 
     @JsonIgnore
-	public String getPrimaryEmail() {
-		if (getEmails() == null || getEmails().isEmpty()) {
-			return null;
-		}
+    public String getPrimaryEmail() {
+        if (getEmails() == null || getEmails().isEmpty()) {
+            return null;
+        }
 
-		Email primaryEmail = null;
+        Email primaryEmail = null;
 
-		for (Email email : getEmails()) {
-			if (email.isPrimary()) {
-				primaryEmail = email;
-				break;
-			}
-		}
+        for (Email email : getEmails()) {
+            if (email.isPrimary()) {
+                primaryEmail = email;
+                break;
+            }
+        }
 
-		if (primaryEmail == null) {
-			primaryEmail = getEmails().get(0);
-		}
+        if (primaryEmail == null) {
+            primaryEmail = getEmails().get(0);
+        }
 
-		return primaryEmail.getValue();
-	}
+        return primaryEmail.getValue();
+    }
 
-	@JsonIgnore
-	public String getGivenName() {
-		return name == null ? null : name.getGivenName();
-	}
+    @JsonIgnore
+    public String getGivenName() {
+        return name == null ? null : name.getGivenName();
+    }
 
-	@JsonIgnore
-	public String getFamilyName() {
-		return name == null ? null : name.getFamilyName();
-	}
+    @JsonIgnore
+    public String getFamilyName() {
+        return name == null ? null : name.getFamilyName();
+    }
 
-	/**
-	 * Adds a new email address, ignoring "type" and "primary" fields, which we don't need yet
-	 */
-	public void addEmail(String newEmail) {
-		Assert.hasText(newEmail);
+    /**
+     * Adds a new email address, ignoring "type" and "primary" fields, which we don't need yet
+     */
+    public void addEmail(String newEmail) {
+        Assert.hasText(newEmail);
 
-		if (emails == null) {
-			emails = new ArrayList<Email>(1);
-		}
-		for (Email email : emails) {
-			if (email.value.equals(newEmail)) {
-				throw new IllegalArgumentException("Already contains email " + newEmail);
-			}
-		}
+        if (emails == null) {
+            emails = new ArrayList<Email>(1);
+        }
+        for (Email email : emails) {
+            if (email.value.equals(newEmail)) {
+                throw new IllegalArgumentException("Already contains email " + newEmail);
+            }
+        }
 
-		Email e = new Email();
-		e.setValue(newEmail);
-		emails.add(e);
-	}
+        Email e = new Email();
+        e.setValue(newEmail);
+        emails.add(e);
+    }
 
-	/**
-	 * Adds a new phone number with null type.
-	 * 
-	 * @param newPhoneNumber
-	 */
-	public void addPhoneNumber(String newPhoneNumber) {
-		Assert.hasText(newPhoneNumber);
+    /**
+     * Adds a new phone number with null type.
+     *
+     * @param newPhoneNumber
+     */
+    public void addPhoneNumber(String newPhoneNumber) {
+        Assert.hasText(newPhoneNumber);
 
-		if (phoneNumbers == null) {
-			phoneNumbers = new ArrayList<PhoneNumber>(1);
-		}
-		for (PhoneNumber email : phoneNumbers) {
-			if (email.value.equals(newPhoneNumber) && email.getType() == null) {
-				throw new IllegalArgumentException("Already contains phoneNumber " + newPhoneNumber);
-			}
-		}
+        if (phoneNumbers == null) {
+            phoneNumbers = new ArrayList<PhoneNumber>(1);
+        }
+        for (PhoneNumber email : phoneNumbers) {
+            if (email.value.equals(newPhoneNumber) && email.getType() == null) {
+                throw new IllegalArgumentException("Already contains phoneNumber " + newPhoneNumber);
+            }
+        }
 
-		PhoneNumber e = new PhoneNumber();
-		e.setValue(newPhoneNumber);
-		phoneNumbers.add(e);
-	}
+        PhoneNumber e = new PhoneNumber();
+        e.setValue(newPhoneNumber);
+        phoneNumbers.add(e);
+    }
 
-	/**
-	 * Creates a word list from the user data for use in password checking implementations
-	 */
-	public List<String> wordList() {
-		List<String> words = new ArrayList<String>();
+    /**
+     * Creates a word list from the user data for use in password checking implementations
+     */
+    public List<String> wordList() {
+        List<String> words = new ArrayList<String>();
 
-		if (userName != null) {
-			words.add(userName);
-		}
+        if (userName != null) {
+            words.add(userName);
+        }
 
-		if (name != null) {
-			if (name.givenName != null) {
-				words.add(name.givenName);
-			}
-			if (name.familyName != null) {
-				words.add(name.familyName);
-			}
-			if (nickName != null) {
-				words.add(nickName);
-			}
-		}
+        if (name != null) {
+            if (name.givenName != null) {
+                words.add(name.givenName);
+            }
+            if (name.familyName != null) {
+                words.add(name.familyName);
+            }
+            if (nickName != null) {
+                words.add(nickName);
+            }
+        }
 
-		if (emails != null) {
-			for (Email email : emails) {
-				words.add(email.getValue());
-			}
-		}
+        if (emails != null) {
+            for (Email email : emails) {
+                words.add(email.getValue());
+            }
+        }
 
-		return words;
-	}
-	
+        return words;
+    }
+
 }

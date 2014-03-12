@@ -10,85 +10,98 @@ import java.util.List;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ScimGroupMember {
 
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-	public static enum Role {
-		MEMBER, READER, WRITER;
-	}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    public static enum Role {
+        MEMBER, READER, WRITER;
+    }
 
-	public static final List<Role> GROUP_MEMBER = Arrays.asList(Role.MEMBER);
-	public static final List<Role> GROUP_ADMIN = Arrays.asList(Role.READER, Role.WRITER);
+    public static final List<Role> GROUP_MEMBER = Arrays.asList(Role.MEMBER);
+    public static final List<Role> GROUP_ADMIN = Arrays.asList(Role.READER, Role.WRITER);
 
-	@JsonProperty("value")
-	private String memberId;
+    @JsonProperty("value")
+    private String memberId;
 
-	@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-	public enum Type {
-		USER, GROUP
-	}
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+    public enum Type {
+        USER, GROUP
+    }
 
-	private Type type;
+    // default to user
+    private Type type = Type.USER;
 
-	@JsonIgnore
-	private List<Role> roles;
+    @JsonIgnore
+    private List<Role> roles;
 
-	public List<Role> getRoles() {
-		return roles;
-	}
+    private String applicationRole;
 
-	public void setRoles(List<Role> permissions) {
-		this.roles = permissions;
-	}
+    public List<Role> getRoles() {
+        return roles;
+    }
 
-	public String getMemberId() {
-		return memberId;
-	}
+    public void setRoles(List<Role> permissions) {
+        this.roles = permissions;
+    }
 
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
-	}
+    public String getMemberId() {
+        return memberId;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
 
-	public void setType(Type type) {
-		this.type = type;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("(memberId: %s, type: %s, roles: %s)", memberId, type, roles);
-	}
+    public void setType(Type type) {
+        this.type = type;
+    }
 
-	@Override
-	public int hashCode() {
-		int hc = 31 ^ memberId.hashCode();
-		hc ^= type.hashCode();
-		return hc;
-	}
+    public String getApplicationRole()
+    {
+        return applicationRole;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof ScimGroupMember)) {
-			return false;
-		}
-		ScimGroupMember other = (ScimGroupMember) o;
-		if (memberId.equals(other.memberId) && type.equals(other.type)) {
-			return true;
-		}
-		return false;
-	}
+    public void setApplicationRole(String applicationRole)
+    {
+        this.applicationRole = applicationRole;
+    }
 
-	public ScimGroupMember() {
-	}
+    @Override
+    public String toString() {
+        return String.format("(memberId: %s, type: %s, roles: %s, applicationRole: %s)", memberId, type, roles, applicationRole);
+    }
 
-	public ScimGroupMember(String memberId) {
-		this(memberId, Type.USER, GROUP_MEMBER);
-	}
+    @Override
+    public int hashCode() {
+        int hc = 31 ^ memberId.hashCode();
+        hc ^= type.hashCode();
+        return hc;
+    }
 
-	public ScimGroupMember(String memberId, Type type, List<Role> roles) {
-		this.memberId = memberId;
-		this.type = type;
-		this.roles = roles;
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ScimGroupMember)) {
+            return false;
+        }
+        ScimGroupMember other = (ScimGroupMember) o;
+        if (memberId.equals(other.memberId) && type.equals(other.type)) {
+            return true;
+        }
+        return false;
+    }
+
+    public ScimGroupMember() {
+    }
+
+    public ScimGroupMember(String memberId) {
+        this(memberId, Type.USER, GROUP_MEMBER);
+    }
+
+    public ScimGroupMember(String memberId, Type type, List<Role> roles) {
+        this.memberId = memberId;
+        this.type = type;
+        this.roles = roles;
+    }
 }
