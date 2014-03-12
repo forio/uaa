@@ -22,6 +22,9 @@ public class ScimGroup extends ScimCore {
     @JsonIgnore
     private String memberRole;
 
+    @JsonIgnore
+    private String memberDefaultProjectRole;
+
     public String getDisplayName() {
         return displayName;
     }
@@ -76,6 +79,16 @@ public class ScimGroup extends ScimCore {
     public void setMemberRole(String memberRole)
     {
         this.memberRole = memberRole;
+    }
+
+    public String getMemberDefaultProjectRole()
+    {
+        return memberDefaultProjectRole;
+    }
+
+    public void setMemberDefaultProjectRole(String memberDefaultProjectRole)
+    {
+        this.memberDefaultProjectRole = memberDefaultProjectRole;
     }
 
     public ScimGroup() {

@@ -33,6 +33,7 @@ public class ScimGroupMember {
     private List<Role> roles;
 
     private String applicationRole;
+    private String defaultProjectRole;
 
     public List<Role> getRoles() {
         return roles;
@@ -66,6 +67,16 @@ public class ScimGroupMember {
     public void setApplicationRole(String applicationRole)
     {
         this.applicationRole = applicationRole;
+    }
+
+    public String getDefaultProjectRole()
+    {
+        return defaultProjectRole;
+    }
+
+    public void setDefaultProjectRole(String defaultProjectRole)
+    {
+        this.defaultProjectRole = defaultProjectRole;
     }
 
     @Override

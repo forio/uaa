@@ -26,6 +26,7 @@ CREATE TABLE GROUP_MEMBERSHIP (
   member_id VARCHAR(36) not null,
   member_type VARCHAR(8) default 'USER' not null,
   application_role VARCHAR(255) null,
+  default_project_role VARCHAR(255) null,
   authorities VARCHAR(255) default 'READ' not null,
   added TIMESTAMP default current_timestamp not null,
   primary key (group_id, member_id)

@@ -1,5 +1,17 @@
 package org.cloudfoundry.identity.uaa.scim.jdbc;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.cloudfoundry.identity.uaa.scim.ScimGroup;
@@ -18,21 +30,8 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManager
 {
@@ -41,21 +40,21 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    public static final String MEMBERSHIP_FIELDS = "group_id,member_id,member_type,authorities,application_role,added";
+    public static final String MEMBERSHIP_FIELDS = "group_id,member_id,member_type,authorities,application_role,default_project_role,added";
 
     public static final String MEMBERSHIP_TABLE = "group_membership";
 
-    public static final String ADD_MEMBER_SQL = String.format("insert into %s ( %s ) values (?,?,?,?,?,?)",
+    public static final String ADD_MEMBER_SQL = String.format("insert into %s ( %s ) values (?,?,?,?,?,?,?)",
             MEMBERSHIP_TABLE, MEMBERSHIP_FIELDS);
 
     public static final String UPDATE_MEMBER_SQL = String.format(
-            "update %s set authorities=?, application_role=? where group_id=? and member_id=?", MEMBERSHIP_TABLE);
+            "update %s set authorities=?, application_role=?, default_project_role=? where group_id=? and member_id=?", MEMBERSHIP_TABLE);
 
     public static final String GET_MEMBERS_SQL = String.format("select %s from %s where group_id=?", MEMBERSHIP_FIELDS,
             MEMBERSHIP_TABLE);
 
     public static final String GET_GROUPS_BY_MEMBER_SQL = String.format(
-            "select distinct group_id, application_role from %s where member_id=?", MEMBERSHIP_TABLE);
+            "select distinct group_id, application_role, default_project_role from %s where member_id=?", MEMBERSHIP_TABLE);
 
     public static final String GET_MEMBERS_WITH_AUTHORITY_SQL = String.format(
             "select %s from %s where group_id=? and lower(authorities) like ?", MEMBERSHIP_FIELDS, MEMBERSHIP_TABLE);
@@ -120,8 +119,8 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
         // first validate the supplied groupId, memberId
         validateRequest(groupId, member);
         final String authorities = getGroupAuthorities(member);
-        final String applicationRole = (member.getApplicationRole() == null) ? null : member.getApplicationRole()
-                .toString();
+        final String applicationRole = (member.getApplicationRole() == null) ? null : member.getApplicationRole().toString();
+        final String defaultProjectRole = (member.getDefaultProjectRole() == null) ? null : member.getDefaultProjectRole().toString();
         final String type = (member.getType() == null ? ScimGroupMember.Type.USER : member.getType()).toString();
         try
         {
@@ -134,7 +133,8 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
                     ps.setString(3, type);
                     ps.setString(4, authorities);
                     ps.setString(5, applicationRole);
-                    ps.setTimestamp(6, new Timestamp(new Date().getTime()));
+                    ps.setString(6, defaultProjectRole);
+                    ps.setTimestamp(7, new Timestamp(new Date().getTime()));
                 }
             });
         }
@@ -192,6 +192,7 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
             try {
                 group = groupProvisioning.retrieve((String) groupInfo.get("group_id"));
                 group.setMemberRole((String) groupInfo.get("application_role"));
+                group.setMemberDefaultProjectRole((String) groupInfo.get("default_project_role"));
             } catch (ScimResourceNotFoundException ex) {
                 continue;
             }
@@ -244,8 +245,8 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
     {
         validateRequest(groupId, member);
         final String authorities = getGroupAuthorities(member);
-        final String applicationRole = (member.getApplicationRole() == null) ? null : member.getApplicationRole()
-                .toString();
+        final String applicationRole = (member.getApplicationRole() == null) ? null : member.getApplicationRole().toString();
+        final String defaultProjectRole = (member.getDefaultProjectRole() == null) ? null : member.getDefaultProjectRole().toString();
         int updated = jdbcTemplate.update(UPDATE_MEMBER_SQL, new PreparedStatementSetter()
         {
             @Override
@@ -253,8 +254,9 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
             {
                 ps.setString(1, authorities);
                 ps.setString(2, applicationRole);
-                ps.setString(3, groupId);
-                ps.setString(4, member.getMemberId());
+                ps.setString(3, defaultProjectRole);
+                ps.setString(4, groupId);
+                ps.setString(5, member.getMemberId());
             }
         });
 
@@ -430,10 +432,12 @@ public class JdbcScimGroupMembershipManager implements ScimGroupMembershipManage
             String memberType = rs.getString(3);
             String authorities = rs.getString(4);
             String applicationRole = rs.getString(5);
+            String defaultProjectRole = rs.getString(6);
 
             ScimGroupMember member = new ScimGroupMember(memberId, ScimGroupMember.Type.valueOf(memberType),
                     getAuthorities(authorities));
             member.setApplicationRole(applicationRole);
+            member.setDefaultProjectRole(defaultProjectRole);
             return member;
         }
 

@@ -43,6 +43,7 @@ public final class ScimUser extends ScimCore {
         String display;
 
         String applicationRole;
+        String defaultProjectRole;
 
         public static enum Type { DIRECT, INDIRECT };
         Type type;
@@ -93,6 +94,16 @@ public final class ScimUser extends ScimCore {
         public void setApplicationRole(String applicationRole)
         {
             this.applicationRole = applicationRole;
+        }
+
+        public String getDefaultProjectRole()
+        {
+            return defaultProjectRole;
+        }
+
+        public void setDefaultProjectRole(String defaultProjectRole)
+        {
+            this.defaultProjectRole = defaultProjectRole;
         }
 
         @Override

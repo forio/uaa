@@ -276,6 +276,7 @@ public class ScimUserEndpoints implements InitializingBean {
         for (ScimGroup group : directGroups) {
             ScimUser.Group userGroup = new ScimUser.Group(group.getId(), group.getDisplayName(), ScimUser.Group.Type.DIRECT);
             userGroup.setApplicationRole(group.getMemberRole());
+            userGroup.setDefaultProjectRole(group.getMemberDefaultProjectRole());
             groups.add(userGroup);
         }
         for (ScimGroup group : indirectGroups) {
