@@ -26,6 +26,8 @@ CREATE TABLE USERS (
    active ${BOOLEAN} default #convert_boolean(true) not null,
    phoneNumber ${VARCHAR}(255),
    verified ${BOOLEAN} default #convert_boolean(false) not null,
+   homePage ${VARCHAR}(255),
+   bio ${CLOB},
 ) $!{VOODOO};
 
 CREATE UNIQUE INDEX unique_uk_1 on users (#lower_constraint("username"));
@@ -54,7 +56,7 @@ CREATE TABLE OAUTH_CLIENT_DETAILS (
 create table oauth_code (
   code ${VARCHAR}(256), authentication ${BLOB}
 ) $!{VOODOO};
-  
+
 CREATE TABLE AUTHZ_APPROVALS (
   userName ${VARCHAR}(36) not null,
   clientId ${VARCHAR}(255) not null,

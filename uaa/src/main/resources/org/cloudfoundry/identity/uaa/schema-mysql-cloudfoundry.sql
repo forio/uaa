@@ -25,7 +25,9 @@ CREATE TABLE users (
    givenName VARCHAR(255),
    familyName VARCHAR(255),
    active BOOLEAN default true not null,
-   phoneNumber VARCHAR(255)
+   phoneNumber VARCHAR(255),
+   homePage VARCHAR(255),
+   bio TEXT
 ) ;
 
 -- add column with null allowed for existing users

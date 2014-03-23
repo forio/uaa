@@ -25,7 +25,9 @@ CREATE TABLE USERS (
    familyName VARCHAR(255),
    active BOOLEAN default true not null,
    phoneNumber VARCHAR(255),
-   verified boolean default false not null
+   verified boolean default false not null,
+   homePage VARCHAR(255),
+   bio TEXT
 ) ;
 
 CREATE UNIQUE INDEX unique_uk_1 on users (lower(username));
@@ -54,7 +56,7 @@ CREATE TABLE OAUTH_CLIENT_DETAILS (
 create table oauth_code (
   code VARCHAR(256), authentication BYTEA
 ) ;
- 
+
 CREATE TABLE AUTHZ_APPROVALS (
   userName VARCHAR(36) not null,
   clientId VARCHAR(36) not null,

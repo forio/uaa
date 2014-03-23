@@ -310,6 +310,10 @@ public final class ScimUser extends ScimCore {
 
     private boolean verified = false;
 
+    private String homePage;
+
+    private String bio;
+
     @JsonProperty
     private String password;
 
@@ -455,6 +459,26 @@ public final class ScimUser extends ScimCore {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public String getHomePage()
+    {
+        return homePage;
+    }
+
+    public void setHomePage(String homePage)
+    {
+        this.homePage = homePage;
+    }
+
+    public String getBio()
+    {
+        return bio;
+    }
+
+    public void setBio(String bio)
+    {
+        this.bio = bio;
     }
 
     @JsonIgnore

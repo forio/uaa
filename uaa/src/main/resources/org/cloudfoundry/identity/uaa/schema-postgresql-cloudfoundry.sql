@@ -23,7 +23,9 @@ CREATE TABLE USERS (
    email VARCHAR(255) not null,
    authority BIGINT default 0,
    givenName VARCHAR(255) not null,
-   familyName VARCHAR(255) not null
+   familyName VARCHAR(255) not null,
+   homePage VARCHAR(255),
+   bio TEXT
 ) ;
 
 ALTER TABLE users DROP CONSTRAINT IF EXISTS unique_uk_1;

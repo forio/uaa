@@ -25,7 +25,9 @@ CREATE TABLE USERS (
    familyName VARCHAR(255),
    active BOOLEAN default true not null,
    phoneNumber VARCHAR(255),
-   verified boolean default false not null
+   verified boolean default false not null,
+   homePage VARCHAR(255),
+   bio LONGVARCHAR,
 ) ;
 
 CREATE UNIQUE INDEX unique_uk_1 on users (username);
