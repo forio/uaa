@@ -14,11 +14,14 @@ package org.cloudfoundry.identity.uaa.scim;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.cloudfoundry.identity.uaa.oauth.approval.Approval;
+import org.cloudfoundry.identity.uaa.util.json.JsonDateDeserializer;
+import org.cloudfoundry.identity.uaa.util.json.JsonDateSerializer;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
@@ -314,6 +317,8 @@ public final class ScimUser extends ScimCore {
 
     private String bio;
 
+    private Date lastLoggedIn;
+
     @JsonProperty
     private String password;
 
@@ -479,6 +484,17 @@ public final class ScimUser extends ScimCore {
     public void setBio(String bio)
     {
         this.bio = bio;
+    }
+
+    @JsonSerialize(using = JsonDateSerializer.class, include = JsonSerialize.Inclusion.NON_NULL)
+    public Date getLastLoggedIn()
+    {
+        return lastLoggedIn;
+    }
+
+    public void setLastLoggedIn(Date lastLoggedIn)
+    {
+        this.lastLoggedIn = lastLoggedIn;
     }
 
     @JsonIgnore

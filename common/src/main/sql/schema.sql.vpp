@@ -28,6 +28,7 @@ CREATE TABLE USERS (
    verified ${BOOLEAN} default #convert_boolean(false) not null,
    homePage ${VARCHAR}(255),
    bio ${CLOB},
+   lastLoggedIn ${TIMESTAMP} null
 ) $!{VOODOO};
 
 CREATE UNIQUE INDEX unique_uk_1 on users (#lower_constraint("username"));

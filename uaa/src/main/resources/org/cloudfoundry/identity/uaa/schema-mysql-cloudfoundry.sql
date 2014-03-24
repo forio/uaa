@@ -27,7 +27,9 @@ CREATE TABLE users (
    active BOOLEAN default true not null,
    phoneNumber VARCHAR(255),
    homePage VARCHAR(255),
-   bio TEXT
+   bio TEXT,
+   lastLoggedIn TIMESTAMP null
+
 ) ;
 
 -- add column with null allowed for existing users

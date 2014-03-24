@@ -25,7 +25,9 @@ CREATE TABLE USERS (
    givenName VARCHAR(255) not null,
    familyName VARCHAR(255) not null,
    homePage VARCHAR(255),
-   bio TEXT
+   bio TEXT,
+   lastLoggedIn TIMESTAMP null
+
 ) ;
 
 ALTER TABLE users DROP CONSTRAINT IF EXISTS unique_uk_1;

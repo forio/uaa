@@ -27,7 +27,9 @@ CREATE TABLE USERS (
    phoneNumber VARCHAR(255),
    verified boolean default false not null,
    homePage VARCHAR(255),
-   bio TEXT
+   bio TEXT,
+   lastLoggedIn TIMESTAMP null
+
 ) ;
 
 CREATE UNIQUE INDEX unique_uk_1 on users (lower(username));

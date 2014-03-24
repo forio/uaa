@@ -28,6 +28,8 @@ CREATE TABLE USERS (
    verified boolean default false not null,
    homePage VARCHAR(255),
    bio LONGVARCHAR,
+   lastLoggedIn TIMESTAMP null
+
 ) ;
 
 CREATE UNIQUE INDEX unique_uk_1 on users (username);

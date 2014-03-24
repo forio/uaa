@@ -7,6 +7,8 @@ import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.JsonDeserializer;
 import org.codehaus.jackson.map.exc.UnrecognizedPropertyException;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -65,6 +67,15 @@ public class ScimUserJsonDeserializer extends JsonDeserializer<ScimUser> {
                     user.setHomePage(jp.readValueAs(String.class));
                 } else if ("bio".equalsIgnoreCase(fieldName)) {
                     user.setBio(jp.readValueAs(String.class));
+                } else if ("lastLoggedIn".equalsIgnoreCase(fieldName)) {
+                    try
+                    {
+                        String dateTimeString = jp.readValueAs(String.class);
+                        DateTime dt = ISODateTimeFormat.dateTimeParser().parseDateTime(dateTimeString);
+                        user.setLastLoggedIn(dt.toDate());
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException(e);
+                    }
                 } else if ("approvals".equalsIgnoreCase(fieldName)) {
                     user.setApprovals(new HashSet<Approval>(Arrays.asList(jp.readValueAs(Approval[].class))));
                 } else {

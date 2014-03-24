@@ -57,12 +57,12 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser> implem
 
     private final Log logger = LogFactory.getLog(getClass());
 
-    public static final String USER_FIELDS = "id,version,created,lastModified,username,email,givenName,familyName,active,phoneNumber,verified,homePage,bio";
+    public static final String USER_FIELDS = "id,version,created,lastModified,username,email,givenName,familyName,active,phoneNumber,verified,homePage,bio,lastLoggedIn";
 
     public static final String CREATE_USER_SQL = "insert into users (" + USER_FIELDS
-            + ",password) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            + ",password) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    public static final String UPDATE_USER_SQL = "update users set version=?, lastModified=?, userName=?, email=?, givenName=?, familyName=?, active=?, phoneNumber=?, verified=?, homePage=?, bio=? where id=? and version=?";
+    public static final String UPDATE_USER_SQL = "update users set version=?, lastModified=?, userName=?, email=?, givenName=?, familyName=?, active=?, phoneNumber=?, verified=?, homePage=?, bio=?, lastLoggedIn=? where id=? and version=?";
 
     public static final String DEACTIVATE_USER_SQL = "update users set active=? where id=?";
 
@@ -161,7 +161,15 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser> implem
                     ps.setBoolean(11, user.isVerified());
                     ps.setString(12, user.getHomePage());
                     ps.setString(13, user.getBio());
-                    ps.setString(14, user.getPassword());
+                    if (user.getLastLoggedIn() == null)
+                    {
+                        ps.setTimestamp(14, null);
+                    }
+                    else
+                    {
+                        ps.setTimestamp(14, new Timestamp(user.getLastLoggedIn().getTime()));
+                    }
+                    ps.setString(15, user.getPassword());
                 }
 
             });
@@ -216,8 +224,16 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser> implem
                 ps.setBoolean(9, user.isVerified());
                 ps.setString(10, user.getHomePage());
                 ps.setString(11, user.getBio());
-                ps.setString(12, id);
-                ps.setInt(13, user.getVersion());
+                if (user.getLastLoggedIn() == null)
+                {
+                    ps.setTimestamp(12, null);
+                }
+                else
+                {
+                    ps.setTimestamp(12, new Timestamp(user.getLastLoggedIn().getTime()));
+                }
+                ps.setString(13, id);
+                ps.setInt(14, user.getVersion());
 
             }
         });
@@ -385,6 +401,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser> implem
             boolean verified = rs.getBoolean(11);
             String homePage = rs.getString(12);
             String bio = rs.getString(13);
+            Date lastLoggedIn = rs.getTimestamp(14);
             ScimUser user = new ScimUser();
             user.setId(id);
             ScimMeta meta = new ScimMeta();
@@ -405,6 +422,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUser> implem
             user.setVerified(verified);
             user.setHomePage(homePage);
             user.setBio(bio);
+            user.setLastLoggedIn(lastLoggedIn);
             return user;
         }
     }
