@@ -26,7 +26,6 @@
         <module>common</module>
         <module>scim</module>
         <module>uaa</module>
-        <module>samples</module>
     </modules>
     <properties>
         <spring.version>3.2.8.RELEASE</spring.version>
