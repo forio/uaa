@@ -16,9 +16,9 @@
     xmlns:sec="http://www.springframework.org/schema/security" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
-		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <bean class="org.cloudfoundry.identity.uaa.config.YamlConfigurationValidator">
         <constructor-arg>
@@ -143,6 +143,22 @@
     <mvc:annotation-driven />
 
     <mvc:default-servlet-handler />
+
+    <!-- custom jackson handler to support dynamics JSON deserializers for @RequestBody -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+       <property name="messageConverters">
+          <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+             <property name="objectMapper" ref="objectMapper"/>
+          </bean>
+       </property>
+    </bean>
+
+    <bean id="jsonHandlerInstantiator" class="org.cloudfoundry.identity.uaa.scim.json.JsonHandlerInstantiator">
+    </bean>
+
+    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper">
+        <property name="handlerInstantiator" ref="jsonHandlerInstantiator"/>
+    </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="viewResolvers">

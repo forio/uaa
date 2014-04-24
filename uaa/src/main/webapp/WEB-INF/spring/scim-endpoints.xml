@@ -15,11 +15,13 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans"
     xmlns:oauth="http://www.springframework.org/schema/security/oauth2" xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
     xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
-		http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
-		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+        http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd">
 
     <bean id="scimUserProvisioning" class="org.cloudfoundry.identity.uaa.scim.jdbc.JdbcScimUserProvisioning">
         <constructor-arg ref="jdbcTemplate" />
@@ -87,7 +89,9 @@
         <property name="approvalStore" ref="approvalStore" />
         <property name="statuses" ref="exceptionToStatusMap" />
         <property name="messageConverters">
+            <util:list>
             <bean class="org.cloudfoundry.identity.uaa.error.ExceptionReportHttpMessageConverter" />
+            </util:list>
         </property>
     </bean>
 
