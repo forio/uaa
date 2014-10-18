@@ -83,7 +83,7 @@
                 <repository>
                     <id>forio-releases</id>
                     <name>forio-releases</name>
-                    <url>http://dev.forio.com/repository/content/repositories/libs-releases-local</url>
+                    <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
                 </repository>
             </distributionManagement>
 		</profile>
