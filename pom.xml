@@ -20,7 +20,7 @@
     <name>CloudFoundry Identity - Parent</name>
     <description>The UAA is the Identity Management Solution for Cloud Foundry</description>
     <packaging>pom</packaging>
-    <version>1.6.2.1</version>
+    <version>1.6.2.5</version>
     <url>http://github.com/cloudfoundry/uaa</url>
     <modules>
         <module>common</module>
@@ -78,7 +78,7 @@
                 <snapshotRepository>
                     <id>forio-snapshots</id>
                     <name>forio-snapshots</name>
-                    <url>http://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
+                    <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
                 </snapshotRepository>
                 <repository>
                     <id>forio-releases</id>

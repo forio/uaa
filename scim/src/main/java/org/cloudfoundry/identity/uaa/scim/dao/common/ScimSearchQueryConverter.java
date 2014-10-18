@@ -1,5 +1,5 @@
 /*******************************************************************************
- *     Cloud Foundry 
+ *     Cloud Foundry
  *     Copyright (c) [2009-2014] Pivotal Software, Inc. All Rights Reserved.
  *
  *     This product is licensed to you under the Apache License, Version 2.0 (the "License").
@@ -87,9 +87,9 @@ public class ScimSearchQueryConverter implements SearchQueryConverter {
 
         where = mapper.mapToInternal(where);
 
-        where = makeCaseInsensitive(where, coPattern, "%slower(%s) like :?%s", "%%%s%%", values);
-        where = makeCaseInsensitive(where, swPattern, "%slower(%s) like :?%s", "%s%%", values);
-        where = makeCaseInsensitive(where, eqPattern, "%slower(%s) = :?%s", "%s", values);
+        where = makeCaseInsensitive(where, coPattern, "%s%s like :?%s", "%%%s%%", values);
+        where = makeCaseInsensitive(where, swPattern, "%s%s like :?%s", "%s%%", values);
+        where = makeCaseInsensitive(where, eqPattern, "%s%s = :?%s", "%s", values);
         where = makeBooleans(where, boPattern, "%s%s = :?%s", values);
         where = prPattern.matcher(where).replaceAll(" is not null$1");
         where = gtPattern.matcher(where).replaceAll(" > ");
