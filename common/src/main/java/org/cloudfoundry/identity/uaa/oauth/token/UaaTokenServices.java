@@ -37,6 +37,7 @@ import org.cloudfoundry.identity.uaa.user.JdbcUaaGroupsDatabase;
 import org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase;
 import org.cloudfoundry.identity.uaa.user.UaaAuthority;
 import org.cloudfoundry.identity.uaa.user.UaaUser;
+import org.cloudfoundry.identity.uaa.user.UaaUserDatabase;
 import org.codehaus.jackson.map.AnnotationIntrospector;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
@@ -104,7 +105,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
 
   private final Log logger = LogFactory.getLog(getClass());
 
-  private JdbcUaaUserDatabase userDatabase = null;
+  private UaaUserDatabase userDatabase = null;
   private JdbcUaaGroupsDatabase groupsDatabase = null;
   private JdbcUaaGroupMembershipDatabase groupMembershipDatabase = null;
 
@@ -548,7 +549,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     Assert.notNull(approvalStore, "approvalStore must be set");
   }
 
-  public void setUserDatabase (JdbcUaaUserDatabase userDatabase) {
+  public void setUserDatabase (UaaUserDatabase userDatabase) {
 
     this.userDatabase = userDatabase;
   }
