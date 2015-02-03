@@ -40,52 +40,30 @@
     <profiles>
 		<profile>
 			<id>forio</id>
-            <repositories>
-                <repository>
-                    <id>spring-release</id>
-                    <name>Spring Framework Release Repository</name>
-                    <url>http://maven.springframework.org/release</url>
-                </repository>
-                <repository>
-                    <id>spring-milestone</id>
-                    <name>Spring Framework Milestone Repository</name>
-                    <url>http://maven.springframework.org/milestone</url>
-                </repository>
-                <repository>
-                <!-- necessary for Spring Security OAuth SNAPSHOT dependency -->
-                    <id>spring-snapshot</id>
-                    <name>Spring Framework Maven Snapshot Repository</name>
-                    <url>http://maven.springframework.org/snapshot</url>
-                </repository>
-                <repository>
-                    <id>objectstyle</id>
-                    <name>ObjectStyle.org Repository</name>
-                    <url>http://objectstyle.org/maven2/</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-external</id>
-                    <name>Spring External</name>
-                    <url>http://repo.springsource.org/ext-release-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>forio-snapshots</id>
-                    <name>forio-snapshots</name>
-                    <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
-                </snapshotRepository>
-                <repository>
-                    <id>forio-releases</id>
-                    <name>forio-releases</name>
-                    <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
-                </repository>
-            </distributionManagement>
+        <repositories>
+            <repository>
+                <id>forio-unstable</id>
+                <url>https://dev.forio.com/repository/content/groups/unstable</url>
+                <snapshots>
+                    <enabled>true</enabled>
+                </snapshots>
+                <releases>
+                    <enabled>true</enabled>
+                </releases>
+            </repository>
+        </repositories>
+        <distributionManagement>
+            <snapshotRepository>
+                <id>nexus</id>
+                <name>forio-snapshots</name>
+                <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
+            </snapshotRepository>
+            <repository>
+                <id>nexus</id>
+                <name>forio-releases</name>
+                <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
+            </repository>
+        </distributionManagement>
 		</profile>
         <profile>
             <!-- Bootstrap the build by adding remote repositories (should be de-activated for a release deployed to Maven) -->
