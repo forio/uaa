@@ -10,10 +10,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class OAuthToken {
 
   private String userId;
-  private String localAccountId;
-  private String[] globalRoles;
-  private String[] accountIds; //account ids where user is a member of the account group
-  private LocalGroup[] localGroups;
+  private String parentAccountId;
+  private GlobalMembership[] globalMemberships;
+  private AccountMembership[] accountMemberships;
+  private ProjectMembership[] projectMemberships;
+  private LocalMembership[] localMemberships;
+  private PersonalMembership[] personalMemberships;
 
   public OAuthToken () {
 
@@ -30,47 +32,69 @@ public class OAuthToken {
     this.userId = userId;
   }
 
-  @XmlElement(name = "localAccountId", required = true, nillable = false)
-  public String getLocalAccountId () {
+  @XmlElement(name = "parentAccountId", required = true, nillable = false)
+  public String getParentAccountId () {
 
-    return localAccountId;
+    return parentAccountId;
   }
 
-  public void setLocalAccountId (String localAccountId) {
+  public void setParentAccountId (String parentAccountId) {
 
-    this.localAccountId = localAccountId;
+    this.parentAccountId = parentAccountId;
   }
 
-  @XmlElement(name = "globalRoles", required = true, nillable = false)
-  public String[] getGlobalRoles () {
+  @XmlElement(name = "globalMemberships", required = false, nillable = false)
+  public GlobalMembership[] getGlobalMemberships () {
 
-    return globalRoles;
+    return globalMemberships;
   }
 
-  public void setGlobalRoles (String[] globalRoles) {
+  public void setGlobalMemberships (GlobalMembership[] globalMemberships) {
 
-    this.globalRoles = globalRoles;
+    this.globalMemberships = globalMemberships;
   }
 
-  @XmlElement(name = "accountIds", required = true, nillable = false)
-  public String[] getAccountIds () {
+  @XmlElement(name = "accountMemberships", required = false, nillable = false)
+  public AccountMembership[] getAccountMemberships () {
 
-    return accountIds;
+    return accountMemberships;
   }
 
-  public void setAccountIds (String[] accountIds) {
+  public void setAccountMemberships (AccountMembership[] accountMemberships) {
 
-    this.accountIds = accountIds;
+    this.accountMemberships = accountMemberships;
   }
 
-  @XmlElement(name = "localGroups", required = true, nillable = false)
-  public LocalGroup[] getLocalGroups () {
+  @XmlElement(name = "projectMemberships", required = false, nillable = false)
+  public ProjectMembership[] getProjectMemberships () {
 
-    return localGroups;
+    return projectMemberships;
   }
 
-  public void setLocalGroups (LocalGroup[] localGroups) {
+  public void setProjectMemberships (ProjectMembership[] projectMemberships) {
 
-    this.localGroups = localGroups;
+    this.projectMemberships = projectMemberships;
+  }
+
+  @XmlElement(name = "localMemberships", required = false, nillable = false)
+  public LocalMembership[] getLocalMemberships () {
+
+    return localMemberships;
+  }
+
+  public void setLocalMemberships (LocalMembership[] localMemberships) {
+
+    this.localMemberships = localMemberships;
+  }
+
+  @XmlElement(name = "personalMemberships", required = false, nillable = false)
+  public PersonalMembership[] getPersonalMemberships () {
+
+    return personalMemberships;
+  }
+
+  public void setPersonalMemberships (PersonalMembership[] personalMemberships) {
+
+    this.personalMemberships = personalMemberships;
   }
 }
