@@ -4,26 +4,30 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-@XmlRootElement(name = "localGroup")
+@XmlRootElement(name = "account")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public class LocalGroup {
+public class AccountMembership extends Membership {
 
   private String accountId;
-  private String projectId;
-  private String group;
   private String role;
 
-  public LocalGroup () {
+  public AccountMembership () {
 
   }
 
-  public LocalGroup (String accountId, String projectId, String group, String role) {
+  public AccountMembership (String accountId, String role) {
 
     this.accountId = accountId;
-    this.projectId = projectId;
-    this.group = group;
     this.role = role;
+  }
+
+  @Override
+  @XmlTransient
+  public MembershipType getMembershipType () {
+
+    return MembershipType.ACCOUNT;
   }
 
   @XmlElement(name = "accountId", required = true, nillable = false)
@@ -35,28 +39,6 @@ public class LocalGroup {
   public void setAccountId (String accountId) {
 
     this.accountId = accountId;
-  }
-
-  @XmlElement(name = "projectId", required = true, nillable = false)
-  public String getProjectId () {
-
-    return projectId;
-  }
-
-  public void setProjectId (String projectId) {
-
-    this.projectId = projectId;
-  }
-
-  @XmlElement(name = "group", required = true, nillable = false)
-  public String getGroup () {
-
-    return group;
-  }
-
-  public void setGroup (String group) {
-
-    this.group = group;
   }
 
   @XmlElement(name = "role", required = true, nillable = false)

@@ -95,14 +95,16 @@ public class ScimUserJsonDeserializer extends JsonDeserializer<ScimUserInterface
             user.setPassword(jp.readValueAs(String.class));
         } else if ("nickname".equalsIgnoreCase(fieldName)) {
             user.setNickName(jp.readValueAs(String.class));
-        } else if ("name".equalsIgnoreCase(fieldName)) {
-            user.setName(jp.readValueAs(ScimName.class));
+        } else if ("givenName".equalsIgnoreCase(fieldName)) {
+            user.setGivenName(jp.readValueAs(String.class));
+        } else if ("familyName".equalsIgnoreCase(fieldName)) {
+          user.setFamilyName(jp.readValueAs(String.class));
         } else if ("locale".equalsIgnoreCase(fieldName)) {
             user.setLocale(jp.readValueAs(String.class));
         } else if ("emails".equalsIgnoreCase(fieldName)) {
             user.setEmails(Arrays.asList(jp.readValueAs(ScimEmail[].class)));
         } else if ("groups".equalsIgnoreCase(fieldName)) {
-            user.setGroups(Arrays.<ScimUserGroupInterface> asList(jp.readValueAs(ScimUserGroup[].class)));
+            user.setGroups(Arrays.<ScimUserGroupInterface>asList(jp.readValueAs(ScimUserGroup[].class)));
         } else if ("displayName".equalsIgnoreCase(fieldName)) {
             user.setDisplayName(jp.readValueAs(String.class));
         } else if ("active".equalsIgnoreCase(fieldName)) {

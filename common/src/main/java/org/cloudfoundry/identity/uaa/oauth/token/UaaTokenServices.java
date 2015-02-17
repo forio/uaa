@@ -34,7 +34,6 @@ import org.cloudfoundry.identity.uaa.oauth.approval.Approval.ApprovalStatus;
 import org.cloudfoundry.identity.uaa.oauth.approval.ApprovalStore;
 import org.cloudfoundry.identity.uaa.user.JdbcUaaGroupMembershipDatabase;
 import org.cloudfoundry.identity.uaa.user.JdbcUaaGroupsDatabase;
-import org.cloudfoundry.identity.uaa.user.JdbcUaaUserDatabase;
 import org.cloudfoundry.identity.uaa.user.UaaAuthority;
 import org.cloudfoundry.identity.uaa.user.UaaUser;
 import org.cloudfoundry.identity.uaa.user.UaaUserDatabase;
@@ -165,10 +164,13 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     // TODO: Need to add a lookup by id so that the refresh token does not
     // need to contain a name
     UaaUser user = userDatabase.retrieveUserByName(username);
-    String localAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
-    String[] globalRoles = groupMembershipDatabase.listGlobalRoles(user);
-    String[] accountIds = groupMembershipDatabase.listAccountIds(user);
-    LocalGroup[] localGroups = groupMembershipDatabase.listLocalGroups(user);
+    String parentAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
+
+    MembershipWrapper[] personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
+    MembershipWrapper[] localMemberships = groupMembershipDatabase.listLocalMemberships(user);
+    MembershipWrapper[] projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
+    MembershipWrapper[] accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
+    MembershipWrapper[] globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
 
     Integer refreshTokenIssuedAt = (Integer)claims.get(IAT);
     long refreshTokenIssueDate = refreshTokenIssuedAt.longValue() * 1000l;
@@ -220,7 +222,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     @SuppressWarnings("unchecked")
     Map<String, String> additionalAuthorizationInfo = (Map<String, String>)claims.get(ADDITIONAL_AZ_ATTR);
 
-    OAuth2AccessToken accessToken = createAccessToken(user.getId(), user.getUsername(), user.getEmail(), localAccountId, globalRoles, accountIds, localGroups,
+    OAuth2AccessToken accessToken = createAccessToken(user.getId(), user.getUsername(), user.getEmail(), parentAccountId, personalMemberships, localMemberships, projectMemberships, accountMemberships, globalMemberships,
                                                        validity != null ? validity.intValue() : accessTokenValiditySeconds, null, requestedScopes,
                                                        clientId,
                                                        request.getResourceIds(), grantType, refreshTokenValue, additionalAuthorizationInfo);
@@ -267,7 +269,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     }
   }
 
-  private OAuth2AccessToken createAccessToken (String userId, String username, String userEmail, String localAccountId, String[] globalRoles, String[] accountIds, LocalGroup[] localGroups,
+  private OAuth2AccessToken createAccessToken (String userId, String username, String userEmail, String parentAccountId, MembershipWrapper[] personalMemberships, MembershipWrapper[] localMemberships, MembershipWrapper[] projectMemberships, MembershipWrapper[] accountMemberships, MembershipWrapper[] globalMemberships,
                                                int validitySeconds, Collection<GrantedAuthority> clientScopes, Set<String> requestedScopes, String clientId,
                                                Set<String> resourceIds, String grantType, String refreshToken,
                                                Map<String, String> additionalAuthorizationAttributes) throws AuthenticationException {
@@ -295,7 +297,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
 
     String content;
     try {
-      content = mapper2.writeValueAsString(createJWTAccessToken(accessToken, userId, username, userEmail, localAccountId, globalRoles, accountIds, localGroups,
+      content = mapper2.writeValueAsString(createJWTAccessToken(accessToken, userId, username, userEmail, parentAccountId, personalMemberships, localMemberships, projectMemberships, accountMemberships, globalMemberships,
                                                                  clientScopes, requestedScopes, clientId, resourceIds, grantType, refreshToken));
     } catch (Exception e) {
       throw new IllegalStateException("Cannot convert access token to JSON", e);
@@ -308,7 +310,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     return accessToken;
   }
 
-  private Map<String, ?> createJWTAccessToken (OAuth2AccessToken token, String userId, String username, String userEmail, String localAccountId, String[] globalRoles, String[] accountIds, LocalGroup[] localGroups,
+  private Map<String, ?> createJWTAccessToken (OAuth2AccessToken token, String userId, String username, String userEmail, String parentAccountId, MembershipWrapper[] personalMemberships, MembershipWrapper[] localMemberships, MembershipWrapper[] projectMemberships, MembershipWrapper[] accountMemberships, MembershipWrapper[] globalMemberships,
                                                Collection<GrantedAuthority> clientScopes, Set<String> requestedScopes,
                                                String clientId,
                                                Set<String> resourceIds, String grantType, String refreshToken) {
@@ -338,10 +340,12 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
       }
     }
 
-    response.put("local_account_id", localAccountId);
-    response.put("global_roles", globalRoles);
-    response.put("account_ids", accountIds);
-    response.put("local_groups", localGroups);
+    response.put("parent_account_id", parentAccountId);
+    response.put("personal_memberships", personalMemberships);
+    response.put("local_memberships", localMemberships);
+    response.put("project_memberships", projectMemberships);
+    response.put("account_memberships", accountMemberships);
+    response.put("global_memberships", globalMemberships);
 
     response.put(IAT, System.currentTimeMillis() / 1000);
     if (token.getExpiration() != null) {
@@ -366,10 +370,12 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     OAuth2RefreshToken refreshToken = createRefreshToken(authentication);
 
     String userId = null;
-    String localAccountId = null;
-    String[] globalRoles = null;
-    String[] accountIds = null;
-    LocalGroup[] localGroups = null;
+    String parentAccountId = null;
+    MembershipWrapper[] personalMemberships = null;
+    MembershipWrapper[] localMemberships = null;
+    MembershipWrapper[] projectMemberships = null;
+    MembershipWrapper[] accountMemberships = null;
+    MembershipWrapper[] globalMemberships = null;
     String username = null;
     String userEmail = null;
 
@@ -385,10 +391,12 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
       username = user.getUsername();
       userEmail = user.getEmail();
 
-      localAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
-      globalRoles = groupMembershipDatabase.listGlobalRoles(user);
-      accountIds = groupMembershipDatabase.listAccountIds(user);
-      localGroups = groupMembershipDatabase.listLocalGroups(user);
+      parentAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
+      personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
+      localMemberships = groupMembershipDatabase.listLocalMemberships(user);
+      projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
+      accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
+      globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
     }
 
     String clientId = authentication.getAuthorizationRequest().getClientId();
@@ -409,7 +417,7 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     ClientDetails client = clientDetailsService.loadClientByClientId(clientId);
     Integer validity = client.getAccessTokenValiditySeconds();
 
-    OAuth2AccessToken accessToken = createAccessToken(userId, username, userEmail, localAccountId, globalRoles, accountIds, localGroups,
+    OAuth2AccessToken accessToken = createAccessToken(userId, username, userEmail, parentAccountId, personalMemberships, localMemberships, projectMemberships, accountMemberships, globalMemberships,
                                                        validity != null ? validity.intValue() : accessTokenValiditySeconds, clientScopes,
                                                        modifiableUserScopes,
                                                        clientId, authentication.getAuthorizationRequest().getResourceIds(), grantType,
