@@ -45,7 +45,7 @@ public class JdbcUaaGroupMembershipDatabase {
 
   public MembershipWrapper[] listLocalMemberships (UaaUser user) {
 
-    List<Map<String, Object>> localList = jdbcTemplate.queryForList("select g.id as group_id, .displayName as displayname, m.application_role as application_role from uaa.groups g, uaa.group_membership m where g.displayname like 'local|%' and m.group_id = g.id and m.member_id = ?", new Object[]{user.getId()});
+    List<Map<String, Object>> localList = jdbcTemplate.queryForList("select g.id as group_id, g.displayName as displayname, m.application_role as application_role from uaa.groups g, uaa.group_membership m where g.displayname like 'local|%' and m.group_id = g.id and m.member_id = ?", new Object[]{user.getId()});
 
     if ((localList == null) || localList.isEmpty()) {
 
