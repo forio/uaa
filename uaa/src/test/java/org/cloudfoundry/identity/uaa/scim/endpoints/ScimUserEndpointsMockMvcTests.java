@@ -81,7 +81,8 @@ public class ScimUserEndpointsMockMvcTests {
         String email = "joe@"+generator.generate().toLowerCase()+".com";
         ScimUserInterface user = new ScimUser();
         user.setUserName("JOE");
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail(email);
 
         byte[] requestBody = new ObjectMapper().writeValueAsBytes(user);
@@ -127,7 +128,8 @@ public class ScimUserEndpointsMockMvcTests {
         user = usersRepository.createUser(user, "password");
 
         user.setUserName("ou");
-        user.setName(new ScimName("Joe", "Smith"));
+        user.setGivenName("Joe");
+        user.setFamilyName("Smith");
 
         MockHttpServletRequestBuilder put = MockMvcRequestBuilders.put("/Users/" + user.getId())
                 .header("Authorization", "Bearer " + scimToken)

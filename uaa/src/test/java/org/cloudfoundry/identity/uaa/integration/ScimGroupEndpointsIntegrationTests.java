@@ -133,7 +133,8 @@ public class ScimGroupEndpointsIntegrationTests {
     private ScimUser createUser(String username, String password) {
         ScimUserInterface user = new ScimUser();
         user.setUserName(username);
-        user.setName(new ScimName(username, username));
+        user.setGivenName(username);
+        user.setFamilyName(username);
         user.addEmail(username);
 
         ScimUser u = client.postForEntity(serverRunning.getUrl(userEndpoint), user, ScimUser.class).getBody();

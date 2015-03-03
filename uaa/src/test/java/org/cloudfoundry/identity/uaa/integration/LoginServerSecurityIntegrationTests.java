@@ -98,7 +98,8 @@ public class LoginServerSecurityIntegrationTests {
 
         ScimUserInterface user = new ScimUser();
         user.setUserName(JOE);
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail("joe@blah.com");
 
         ResponseEntity<ScimUser> newuser = client.postForEntity(serverRunning.getUrl(userEndpoint), user,

@@ -81,7 +81,8 @@ public class VmcUserIdTranslationEndpointIntegrationTests {
 
         ScimUserInterface user = new ScimUser();
         user.setUserName(JOE);
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail("joe@blah.com");
         user.setGroups(Arrays.<ScimUserGroupInterface>asList(new ScimUserGroup(null, "uaa.user"), new ScimUserGroup(null, "orgs.foo")));
 

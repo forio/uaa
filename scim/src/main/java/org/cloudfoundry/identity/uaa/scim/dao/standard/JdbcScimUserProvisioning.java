@@ -28,7 +28,6 @@ import org.cloudfoundry.identity.uaa.rest.jdbc.JdbcPagingListFactory;
 import org.cloudfoundry.identity.uaa.scim.dao.common.ScimSearchQueryConverter;
 import org.cloudfoundry.identity.uaa.scim.dao.common.ScimUserProvisioning;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimMeta;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
 import org.cloudfoundry.identity.uaa.scim.exception.InvalidPasswordException;
@@ -406,7 +405,7 @@ public class JdbcScimUserProvisioning extends AbstractQueryable<ScimUserInterfac
       if (phoneNumber != null) {
         user.addPhoneNumber(phoneNumber);
       }
-      ScimName name = new ScimName();
+
       user.setGivenName(givenName);
       user.setFamilyName(familyName);
       user.setActive(active);

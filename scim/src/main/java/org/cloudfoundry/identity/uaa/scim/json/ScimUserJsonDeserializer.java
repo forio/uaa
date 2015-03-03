@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
 import org.cloudfoundry.identity.uaa.oauth.approval.Approval;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimEmail;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimMeta;
@@ -35,90 +34,90 @@ import org.codehaus.jackson.map.JsonDeserializer;
 
 public class ScimUserJsonDeserializer extends JsonDeserializer<ScimUserInterface> {
 
-    @Override
-    public ScimUserInterface deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        ScimUserInterface user = createObject();
+  @Override
+  public ScimUserInterface deserialize (JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
-        Map<String, Object> context = new HashMap<String, Object>();
+    ScimUserInterface user = createObject();
 
-        startDeserialization(user, context);
+    Map<String, Object> context = new HashMap<String, Object>();
 
-        while (jp.nextToken() != JsonToken.END_OBJECT) {
-            if (jp.getCurrentToken() == JsonToken.FIELD_NAME) {
-                String fieldName = jp.getCurrentName();
-                jp.nextToken();
+    startDeserialization(user, context);
 
-                deserializeField(user, fieldName, jp, context);
-            }
-        }
+    while (jp.nextToken() != JsonToken.END_OBJECT) {
+      if (jp.getCurrentToken() == JsonToken.FIELD_NAME) {
+        String fieldName = jp.getCurrentName();
+        jp.nextToken();
 
-        endDeserialization(user, context);
-
-        return user;
+        deserializeField(user, fieldName, jp, context);
+      }
     }
 
+    endDeserialization(user, context);
 
-    protected ScimUserInterface createObject()
-    {
-        return new ScimUser();
+    return user;
+  }
+
+  protected ScimUserInterface createObject () {
+
+    return new ScimUser();
+  }
+
+  protected void startDeserialization (ScimUserInterface user, Map<String, Object> context) {
+
+  }
+
+  protected void deserializeField (ScimUserInterface user, String fieldName, JsonParser jp, Map<String, Object> context) throws JsonProcessingException, IOException {
+
+    if ("id".equalsIgnoreCase(fieldName)) {
+      user.setId(jp.readValueAs(String.class));
+    } else if ("userName".equalsIgnoreCase(fieldName)) {
+      user.setUserName(jp.readValueAs(String.class));
+    } else if ("externalId".equalsIgnoreCase(fieldName)) {
+      user.setExternalId(jp.readValueAs(String.class));
+    } else if ("meta".equalsIgnoreCase(fieldName)) {
+      user.setMeta(jp.readValueAs(ScimMeta.class));
+    } else if ("schemas".equalsIgnoreCase(fieldName)) {
+      user.setSchemas(jp.readValueAs(String[].class));
+    } else if ("userType".equalsIgnoreCase(fieldName)) {
+      user.setUserType(jp.readValueAs(String.class));
+    } else if ("title".equalsIgnoreCase(fieldName)) {
+      user.setTitle(jp.readValueAs(String.class));
+    } else if ("timezone".equalsIgnoreCase(fieldName)) {
+      user.setTimezone(jp.readValueAs(String.class));
+    } else if ("profileUrl".equalsIgnoreCase(fieldName)) {
+      user.setProfileUrl(jp.readValueAs(String.class));
+    } else if ("preferredLanguage".equalsIgnoreCase(fieldName)) {
+      user.setPreferredLanguage(jp.readValueAs(String.class));
+    } else if ("phoneNumbers".equalsIgnoreCase(fieldName)) {
+      user.setPhoneNumbers(Arrays.asList(jp.readValueAs(ScimPhoneNumber[].class)));
+    } else if ("password".equalsIgnoreCase(fieldName)) {
+      user.setPassword(jp.readValueAs(String.class));
+    } else if ("nickname".equalsIgnoreCase(fieldName)) {
+      user.setNickName(jp.readValueAs(String.class));
+    } else if ("name".equalsIgnoreCase(fieldName)) {
+
+      ScimName scimName = jp.readValueAs(ScimName.class);
+
+      user.setGivenName(scimName.getGivenName());
+      user.setFamilyName(scimName.getFamilyName());
+    } else if ("locale".equalsIgnoreCase(fieldName)) {
+      user.setLocale(jp.readValueAs(String.class));
+    } else if ("emails".equalsIgnoreCase(fieldName)) {
+      user.setEmails(Arrays.asList(jp.readValueAs(ScimEmail[].class)));
+    } else if ("groups".equalsIgnoreCase(fieldName)) {
+      user.setGroups(Arrays.<ScimUserGroupInterface>asList(jp.readValueAs(ScimUserGroup[].class)));
+    } else if ("displayName".equalsIgnoreCase(fieldName)) {
+      user.setDisplayName(jp.readValueAs(String.class));
+    } else if ("active".equalsIgnoreCase(fieldName)) {
+      user.setActive(jp.readValueAs(Boolean.class));
+    } else if ("verified".equalsIgnoreCase(fieldName)) {
+      user.setVerified(jp.readValueAs(Boolean.class));
+    } else if ("approvals".equalsIgnoreCase(fieldName)) {
+      user.setApprovals(new HashSet<Approval>(Arrays.asList(jp.readValueAs(Approval[].class))));
     }
+  }
 
-    protected void startDeserialization(ScimUserInterface user, Map<String, Object> context)
-    {
-    }
+  protected void endDeserialization (ScimUserInterface user, Map<String, Object> context) {
 
-    protected void deserializeField(ScimUserInterface user, String fieldName, JsonParser jp, Map<String, Object> context) throws JsonProcessingException, IOException
-    {
-        if ("id".equalsIgnoreCase(fieldName)) {
-            user.setId(jp.readValueAs(String.class));
-        } else if ("userName".equalsIgnoreCase(fieldName)) {
-            user.setUserName(jp.readValueAs(String.class));
-        } else if ("externalId".equalsIgnoreCase(fieldName)) {
-            user.setExternalId(jp.readValueAs(String.class));
-        } else if ("meta".equalsIgnoreCase(fieldName)) {
-            user.setMeta(jp.readValueAs(ScimMeta.class));
-        } else if ("schemas".equalsIgnoreCase(fieldName)) {
-            user.setSchemas(jp.readValueAs(String[].class));
-        } else if ("userType".equalsIgnoreCase(fieldName)) {
-            user.setUserType(jp.readValueAs(String.class));
-        } else if ("title".equalsIgnoreCase(fieldName)) {
-            user.setTitle(jp.readValueAs(String.class));
-        } else if ("timezone".equalsIgnoreCase(fieldName)) {
-            user.setTimezone(jp.readValueAs(String.class));
-        } else if ("profileUrl".equalsIgnoreCase(fieldName)) {
-            user.setProfileUrl(jp.readValueAs(String.class));
-        } else if ("preferredLanguage".equalsIgnoreCase(fieldName)) {
-            user.setPreferredLanguage(jp.readValueAs(String.class));
-        } else if ("phoneNumbers".equalsIgnoreCase(fieldName)) {
-            user.setPhoneNumbers(Arrays.asList(jp.readValueAs(ScimPhoneNumber[].class)));
-        } else if ("password".equalsIgnoreCase(fieldName)) {
-            user.setPassword(jp.readValueAs(String.class));
-        } else if ("nickname".equalsIgnoreCase(fieldName)) {
-            user.setNickName(jp.readValueAs(String.class));
-        } else if ("givenName".equalsIgnoreCase(fieldName)) {
-            user.setGivenName(jp.readValueAs(String.class));
-        } else if ("familyName".equalsIgnoreCase(fieldName)) {
-          user.setFamilyName(jp.readValueAs(String.class));
-        } else if ("locale".equalsIgnoreCase(fieldName)) {
-            user.setLocale(jp.readValueAs(String.class));
-        } else if ("emails".equalsIgnoreCase(fieldName)) {
-            user.setEmails(Arrays.asList(jp.readValueAs(ScimEmail[].class)));
-        } else if ("groups".equalsIgnoreCase(fieldName)) {
-            user.setGroups(Arrays.<ScimUserGroupInterface>asList(jp.readValueAs(ScimUserGroup[].class)));
-        } else if ("displayName".equalsIgnoreCase(fieldName)) {
-            user.setDisplayName(jp.readValueAs(String.class));
-        } else if ("active".equalsIgnoreCase(fieldName)) {
-            user.setActive(jp.readValueAs(Boolean.class));
-        } else if ("verified".equalsIgnoreCase(fieldName)) {
-            user.setVerified(jp.readValueAs(Boolean.class));
-        } else if ("approvals".equalsIgnoreCase(fieldName)) {
-            user.setApprovals(new HashSet<Approval>(Arrays.asList(jp.readValueAs(Approval[].class))));
-        }
-    }
-
-    protected void endDeserialization (ScimUserInterface user, Map<String, Object> context)
-    {
-    }
-
-
+  }
 }

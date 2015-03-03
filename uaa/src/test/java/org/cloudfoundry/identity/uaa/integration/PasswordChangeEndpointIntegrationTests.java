@@ -70,7 +70,8 @@ public class PasswordChangeEndpointIntegrationTests {
     private ResponseEntity<ScimUser> createUser(String username, String firstName, String lastName, String email) {
         ScimUserInterface user = new ScimUser();
         user.setUserName(username);
-        user.setName(new ScimName(firstName, lastName));
+        user.setGivenName(firstName);
+        user.setFamilyName(lastName);
         user.addEmail(email);
         user.setPassword("password");
         return client.postForEntity(serverRunning.getUrl(userEndpoint), user, ScimUser.class);
