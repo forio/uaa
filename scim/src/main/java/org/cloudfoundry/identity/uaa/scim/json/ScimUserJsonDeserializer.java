@@ -100,6 +100,10 @@ public class ScimUserJsonDeserializer extends JsonDeserializer<ScimUserInterface
 
       user.setGivenName(scimName.getGivenName());
       user.setFamilyName(scimName.getFamilyName());
+    } else if ("givenName".equalsIgnoreCase(fieldName)) {
+      user.setGivenName(jp.readValueAs(String.class));
+    } else if ("familyName".equalsIgnoreCase(fieldName)) {
+      user.setFamilyName(jp.readValueAs(String.class));
     } else if ("locale".equalsIgnoreCase(fieldName)) {
       user.setLocale(jp.readValueAs(String.class));
     } else if ("emails".equalsIgnoreCase(fieldName)) {
