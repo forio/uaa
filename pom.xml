@@ -52,18 +52,18 @@
                 </releases>
             </repository>
         </repositories>
-        <distributionManagement>
-            <snapshotRepository>
-                <id>nexus</id>
-                <name>forio-snapshots</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
-            </snapshotRepository>
-            <repository>
-                <id>nexus</id>
-                <name>forio-releases</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
-            </repository>
-        </distributionManagement>
+      <distributionManagement>
+        <repository>
+          <id>${nexus.releases.id}</id>
+          <name>forio-releases</name>
+          <url>${nexus.releases.url}</url>
+        </repository>
+        <snapshotRepository>
+          <id>${nexus.snapshots.id}</id>
+          <name>forio-snapshots</name>
+          <url>${nexus.snapshots.url}</url>
+        </snapshotRepository>
+      </distributionManagement>
 		</profile>
         <profile>
             <!-- Bootstrap the build by adding remote repositories (should be de-activated for a release deployed to Maven) -->
