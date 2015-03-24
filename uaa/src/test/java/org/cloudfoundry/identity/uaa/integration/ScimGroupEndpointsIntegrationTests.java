@@ -29,7 +29,6 @@ import org.apache.commons.logging.LogFactory;
 import org.cloudfoundry.identity.uaa.message.PasswordChangeRequest;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimGroupMemberInterface;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimGroup;

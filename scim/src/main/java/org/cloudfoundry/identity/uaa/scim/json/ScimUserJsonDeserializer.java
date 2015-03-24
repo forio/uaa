@@ -20,7 +20,6 @@ import java.util.Map;
 import org.cloudfoundry.identity.uaa.oauth.approval.Approval;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimEmail;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimMeta;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimPhoneNumber;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
@@ -94,12 +93,6 @@ public class ScimUserJsonDeserializer extends JsonDeserializer<ScimUserInterface
       user.setPassword(jp.readValueAs(String.class));
     } else if ("nickname".equalsIgnoreCase(fieldName)) {
       user.setNickName(jp.readValueAs(String.class));
-    } else if ("name".equalsIgnoreCase(fieldName)) {
-
-      ScimName scimName = jp.readValueAs(ScimName.class);
-
-      user.setGivenName(scimName.getGivenName());
-      user.setFamilyName(scimName.getFamilyName());
     } else if ("givenName".equalsIgnoreCase(fieldName)) {
       user.setGivenName(jp.readValueAs(String.class));
     } else if ("familyName".equalsIgnoreCase(fieldName)) {

@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.cloudfoundry.identity.uaa.oauth.client.ClientDetailsModification;
 import org.cloudfoundry.identity.uaa.scim.dao.common.ScimUserProvisioning;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
 import org.cloudfoundry.identity.uaa.test.DefaultIntegrationTestConfig;

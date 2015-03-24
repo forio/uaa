@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;

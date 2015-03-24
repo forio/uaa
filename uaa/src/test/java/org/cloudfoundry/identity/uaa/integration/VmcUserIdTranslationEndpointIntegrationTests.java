@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.cloudfoundry.identity.uaa.message.PasswordChangeRequest;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
