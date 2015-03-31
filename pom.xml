@@ -56,12 +56,12 @@
             <snapshotRepository>
                 <id>nexus</id>
                 <name>forio-snapshots</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
+                <url>https://dev.forio.com/repository/content/repositories/snapshots</url>
             </snapshotRepository>
             <repository>
                 <id>nexus</id>
                 <name>forio-releases</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
+                <url>https://dev.forio.com/repository/content/repositories/releases</url>
             </repository>
         </distributionManagement>
 		</profile>
