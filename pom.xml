@@ -56,12 +56,12 @@
             <snapshotRepository>
                 <id>nexus</id>
                 <name>forio-snapshots</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-snapshots-local</url>
+                <url>https://dev.forio.com/repository/content/repositories/snapshots</url>
             </snapshotRepository>
             <repository>
                 <id>nexus</id>
                 <name>forio-releases</name>
-                <url>https://dev.forio.com/repository/content/repositories/libs-releases-local</url>
+                <url>https://dev.forio.com/repository/content/repositories/releases</url>
             </repository>
         </distributionManagement>
 		</profile>
@@ -428,16 +428,16 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-    <distributionManagement>
-        <repository>
-            <id>spring-release-write</id>
-            <name>Spring Release Repository</name>
-            <url>s3://maven.springframework.org/release</url>
-        </repository>
-        <snapshotRepository>
-            <id>spring-snapshot-write</id>
-            <name>Spring Snapshot Repository</name>
-            <url>s3://maven.springframework.org/snapshot</url>
-        </snapshotRepository>
-    </distributionManagement>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>nexus</id>
+      <name>forio-snapshots</name>
+      <url>https://dev.forio.com/repository/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>nexus</id>
+      <name>forio-releases</name>
+      <url>https://dev.forio.com/repository/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 </project>
