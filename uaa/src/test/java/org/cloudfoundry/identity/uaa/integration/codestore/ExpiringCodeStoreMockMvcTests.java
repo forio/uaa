@@ -62,8 +62,6 @@ public class ExpiringCodeStoreMockMvcTests {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Flyway flyway = webApplicationContext.getBean(Flyway.class);
-        flyway.clean();
         webApplicationContext.close();
     }
 
