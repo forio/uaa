@@ -77,7 +77,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.servlet.View;
 
-import com.googlecode.flyway.core.Flyway;
 
 @ContextConfiguration(locations = { "classpath:spring/env.xml", "classpath:spring/data-source.xml" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,7 +85,6 @@ import com.googlecode.flyway.core.Flyway;
 @ProfileValueSourceConfiguration(NullSafeSystemProfileValueSource.class)
 public class ScimGroupEndpointsTests {
 
-    private static Flyway flyway;
     Log logger = LogFactory.getLog(getClass());
 
     private static EmbeddedDatabase database;

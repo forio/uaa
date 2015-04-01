@@ -1,6 +1,5 @@
 package org.cloudfoundry.identity.uaa.mock.clients;
 
-import com.googlecode.flyway.core.Flyway;
 import org.cloudfoundry.identity.uaa.audit.AuditEventType;
 import org.cloudfoundry.identity.uaa.audit.event.AbstractUaaEvent;
 import org.cloudfoundry.identity.uaa.config.YamlServletProfileInitializer;

@@ -439,5 +439,10 @@
             <name>Spring Snapshot Repository</name>
             <url>s3://maven.springframework.org/snapshot</url>
         </snapshotRepository>
+    <repository>
+      <id>nexus</id>
+      <name>forio-releases</name>
+      <url>https://dev.forio.com/repository/content/repositories/releases</url>
+    </repository>
     </distributionManagement>
 </project>

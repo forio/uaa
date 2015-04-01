@@ -43,7 +43,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.googlecode.flyway.core.Flyway;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -52,8 +51,6 @@ import com.googlecode.flyway.core.Flyway;
 public class ScimUserEndpointsMockMvcTests {
 
     @Autowired WebApplicationContext webApplicationContext;
-    @Autowired FilterChainProxy springSecurityFilterChain;
-    @Autowired Flyway flyway;
 
     private MockMvc mockMvc;
     private String scimToken;
@@ -62,7 +59,6 @@ public class ScimUserEndpointsMockMvcTests {
     @Before
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(springSecurityFilterChain)
                 .build();
 
         TestClient testClient = new TestClient(mockMvc);
