@@ -114,11 +114,7 @@ public class ScimGroupEndpointsTests {
     public static void setup() throws Exception {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.build();
-        flyway = new Flyway();
-        flyway.setInitVersion("1.5.2");
-        flyway.setLocations("classpath:/org/cloudfoundry/identity/uaa/db/hsqldb/");
-        flyway.setDataSource(database);
-        flyway.migrate();
+
         // confirm that everything is clean prior to test.
         TestUtils.deleteFrom(database, "users", "groups", "group_membership");
     }

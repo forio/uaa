@@ -36,7 +36,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
-import com.googlecode.flyway.core.Flyway;
 
 public class PasswordChangeEndpointTests {
 
@@ -47,17 +46,11 @@ public class PasswordChangeEndpointTests {
     private PasswordChangeEndpoint endpoints;
 
     private static EmbeddedDatabase database;
-    private static Flyway flyway;
 
     @BeforeClass
     public static void init() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.build();
-        flyway = new Flyway();
-        flyway.setInitVersion("1.5.2");
-        flyway.setLocations("classpath:/org/cloudfoundry/identity/uaa/db/hsqldb/");
-        flyway.setDataSource(database);
-        flyway.migrate();
     }
 
     @Before

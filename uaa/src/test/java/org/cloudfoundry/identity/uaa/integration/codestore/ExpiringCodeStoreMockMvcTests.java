@@ -38,8 +38,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
-import com.googlecode.flyway.core.Flyway;
-
 public class ExpiringCodeStoreMockMvcTests {
 
     private static XmlWebApplicationContext webApplicationContext;
