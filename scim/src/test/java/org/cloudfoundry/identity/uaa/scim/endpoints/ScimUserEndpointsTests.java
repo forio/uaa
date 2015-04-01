@@ -78,8 +78,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.servlet.View;
 
-import com.googlecode.flyway.core.Flyway;
-
 /**
  * @author Dave Syer
  * @author Luke Taylor
@@ -110,11 +108,6 @@ public class ScimUserEndpointsTests {
     public static void setUpDatabase() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.build();
-        Flyway flyway = new Flyway();
-        flyway.setInitVersion("1.5.2");
-        flyway.setLocations("classpath:/org/cloudfoundry/identity/uaa/db/hsqldb/");
-        flyway.setDataSource(database);
-        flyway.migrate();
     }
 
     @Before

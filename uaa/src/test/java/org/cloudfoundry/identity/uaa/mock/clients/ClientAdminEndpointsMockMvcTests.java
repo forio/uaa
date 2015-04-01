@@ -146,8 +146,6 @@ public class ClientAdminEndpointsMockMvcTests {
 
     @After
     public void tearDown() throws Exception {
-        Flyway flyway = webApplicationContext.getBean(Flyway.class);
-        flyway.clean();
         webApplicationContext.close();
     }
 
