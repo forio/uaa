@@ -1,5 +1,5 @@
 /*******************************************************************************
- *     Cloud Foundry 
+ *     Cloud Foundry
  *     Copyright (c) [2009-2014] Pivotal Software, Inc. All Rights Reserved.
  *
  *     This product is licensed to you under the Apache License, Version 2.0 (the "License").
@@ -166,11 +166,17 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     UaaUser user = userDatabase.retrieveUserByName(username);
     String parentAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
 
-    MembershipWrapper[] personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
-    MembershipWrapper[] localMemberships = groupMembershipDatabase.listLocalMemberships(user);
-    MembershipWrapper[] projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
-    MembershipWrapper[] accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
-    MembershipWrapper[] globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
+    MembershipWrapper[] personalMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] localMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] projectMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] accountMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] globalMemberships = new MembershipWrapper[]{};
+
+//    MembershipWrapper[] personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
+//    MembershipWrapper[] localMemberships = groupMembershipDatabase.listLocalMemberships(user);
+//    MembershipWrapper[] projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
+//    MembershipWrapper[] accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
+//    MembershipWrapper[] globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
 
     Integer refreshTokenIssuedAt = (Integer)claims.get(IAT);
     long refreshTokenIssueDate = refreshTokenIssuedAt.longValue() * 1000l;
@@ -341,11 +347,11 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
     }
 
     response.put("parent_account_id", parentAccountId);
-    response.put("personal_memberships", personalMemberships);
-    response.put("local_memberships", localMemberships);
-    response.put("project_memberships", projectMemberships);
-    response.put("account_memberships", accountMemberships);
-    response.put("global_memberships", globalMemberships);
+//    response.put("personal_memberships", personalMemberships);
+//    response.put("local_memberships", localMemberships);
+//    response.put("project_memberships", projectMemberships);
+//    response.put("account_memberships", accountMemberships);
+//    response.put("global_memberships", globalMemberships);
 
     response.put(IAT, System.currentTimeMillis() / 1000);
     if (token.getExpiration() != null) {
@@ -371,11 +377,11 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
 
     String userId = null;
     String parentAccountId = null;
-    MembershipWrapper[] personalMemberships = null;
-    MembershipWrapper[] localMemberships = null;
-    MembershipWrapper[] projectMemberships = null;
-    MembershipWrapper[] accountMemberships = null;
-    MembershipWrapper[] globalMemberships = null;
+    MembershipWrapper[] personalMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] localMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] projectMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] accountMemberships = new MembershipWrapper[]{};
+    MembershipWrapper[] globalMemberships = new MembershipWrapper[]{};
     String username = null;
     String userEmail = null;
 
@@ -392,11 +398,11 @@ public class UaaTokenServices implements AuthorizationServerTokenServices, Resou
       userEmail = user.getEmail();
 
       parentAccountId = user.getUsername().endsWith("/") ? user.getUsername().substring(user.getUsername().substring(0, user.getUsername().length() - 1).lastIndexOf('/') + 1, user.getUsername().length() - 1) : null;
-      personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
-      localMemberships = groupMembershipDatabase.listLocalMemberships(user);
-      projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
-      accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
-      globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
+//      personalMemberships = groupMembershipDatabase.listPersonalMemberships(user);
+//      localMemberships = groupMembershipDatabase.listLocalMemberships(user);
+//      projectMemberships = groupMembershipDatabase.listProjectMemberships(user);
+//      accountMemberships = groupMembershipDatabase.listAccountMemberships(user);
+//      globalMemberships = groupMembershipDatabase.listGlobalMemberships(user);
     }
 
     String clientId = authentication.getAuthorizationRequest().getClientId();
