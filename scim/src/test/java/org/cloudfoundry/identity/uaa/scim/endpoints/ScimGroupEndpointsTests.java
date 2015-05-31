@@ -114,6 +114,7 @@ public class ScimGroupEndpointsTests {
     public static void setup() throws Exception {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.build();
+
         // confirm that everything is clean prior to test.
         TestUtils.deleteFrom(database, "users", "groups", "group_membership");
     }
