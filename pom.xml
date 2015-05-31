@@ -20,7 +20,7 @@
     <name>CloudFoundry Identity - Parent</name>
     <description>The UAA is the Identity Management Solution for Cloud Foundry</description>
     <packaging>pom</packaging>
-    <version>1.6.2.5</version>
+    <version>1.7.0</version>
     <url>http://github.com/cloudfoundry/uaa</url>
     <modules>
         <module>common</module>
@@ -52,18 +52,18 @@
                 </releases>
             </repository>
         </repositories>
-        <distributionManagement>
-            <snapshotRepository>
-                <id>nexus</id>
-                <name>forio-snapshots</name>
-                <url>https://dev.forio.com/repository/content/repositories/snapshots</url>
-            </snapshotRepository>
-            <repository>
-                <id>nexus</id>
-                <name>forio-releases</name>
-                <url>https://dev.forio.com/repository/content/repositories/releases</url>
-            </repository>
-        </distributionManagement>
+      <distributionManagement>
+        <repository>
+          <id>${nexus.releases.id}</id>
+          <name>forio-releases</name>
+          <url>${nexus.releases.url}</url>
+        </repository>
+        <snapshotRepository>
+          <id>${nexus.snapshots.id}</id>
+          <name>forio-snapshots</name>
+          <url>${nexus.snapshots.url}</url>
+        </snapshotRepository>
+      </distributionManagement>
 		</profile>
         <profile>
             <!-- Bootstrap the build by adding remote repositories (should be de-activated for a release deployed to Maven) -->
@@ -229,28 +229,6 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.6</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant</artifactId>
-                            <version>1.7.0</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-trax</artifactId>
-                            <version>1.7.0</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-apache-regexp</artifactId>
-                            <version>1.7.0</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings
                     only. It has no influence on the Maven build itself. -->
                 <plugin>

@@ -37,8 +37,6 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import com.googlecode.flyway.core.Flyway;
-
 /**
  * @author Luke Taylor
  * @author Dave Syer
@@ -54,17 +52,12 @@ public class ScimUserBootstrapTests {
     private ScimUserEndpoints userEndpoints;
 
     private EmbeddedDatabase database;
-    private Flyway flyway;
 
     @Before
     public void setUp() {
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
         database = builder.build();
-        flyway = new Flyway();
-        flyway.setInitVersion("1.5.2");
-        flyway.setLocations("classpath:/org/cloudfoundry/identity/uaa/db/hsqldb/");
-        flyway.setDataSource(database);
-        flyway.migrate();
+
         JdbcTemplate jdbcTemplate = new JdbcTemplate(database);
         JdbcPagingListFactory pagingListFactory = new JdbcPagingListFactory(jdbcTemplate, new DefaultLimitSqlAdapter());
         db = new JdbcScimUserProvisioning(jdbcTemplate, pagingListFactory);

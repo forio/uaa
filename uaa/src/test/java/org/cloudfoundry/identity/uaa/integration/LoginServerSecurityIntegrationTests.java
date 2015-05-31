@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.cloudfoundry.identity.uaa.message.PasswordChangeRequest;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
 import org.cloudfoundry.identity.uaa.test.TestAccountSetup;
@@ -98,7 +97,8 @@ public class LoginServerSecurityIntegrationTests {
 
         ScimUserInterface user = new ScimUser();
         user.setUserName(JOE);
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail("joe@blah.com");
 
         ResponseEntity<ScimUser> newuser = client.postForEntity(serverRunning.getUrl(userEndpoint), user,

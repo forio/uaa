@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.cloudfoundry.identity.uaa.message.PasswordChangeRequest;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
@@ -81,7 +80,8 @@ public class VmcUserIdTranslationEndpointIntegrationTests {
 
         ScimUserInterface user = new ScimUser();
         user.setUserName(JOE);
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail("joe@blah.com");
         user.setGroups(Arrays.<ScimUserGroupInterface>asList(new ScimUserGroup(null, "uaa.user"), new ScimUserGroup(null, "orgs.foo")));
 

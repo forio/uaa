@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserGroupInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
@@ -98,7 +97,8 @@ public class ScimUserEndpointsIntegrationTests {
     private ResponseEntity<ScimUser> createUser(String username, String firstName, String lastName, String email) {
         ScimUserInterface user = new ScimUser();
         user.setUserName(username);
-        user.setName(new ScimName(firstName, lastName));
+        user.setGivenName(firstName);
+        user.setFamilyName(lastName);
         user.addEmail(email);
 
         return client.postForEntity(serverRunning.getUrl(userEndpoint), user, ScimUser.class);
@@ -108,7 +108,8 @@ public class ScimUserEndpointsIntegrationTests {
                     String email, boolean verified) {
         ScimUserInterface user = new ScimUser();
         user.setUserName(username);
-        user.setName(new ScimName(firstName, lastName));
+        user.setGivenName(firstName);
+        user.setFamilyName(lastName);
         user.addEmail(email);
         user.setVerified(verified);
 
@@ -208,7 +209,8 @@ public class ScimUserEndpointsIntegrationTests {
     public void createUserWithNoEmailFails() throws Exception {
         ScimUserInterface user = new ScimUser();
         user.setUserName("dave");
-        user.setName(new ScimName("Dave", "Syer"));
+        user.setGivenName("Dave");
+        user.setFamilyName("Syer");
 
         @SuppressWarnings("rawtypes")
         ResponseEntity<Map> response = client.postForEntity(serverRunning.getUrl(userEndpoint), user, Map.class);
@@ -243,7 +245,8 @@ public class ScimUserEndpointsIntegrationTests {
         ScimUser joe = response.getBody();
         assertEquals(JOE, joe.getUserName());
 
-        joe.setName(new ScimName("Joe", "Bloggs"));
+        joe.setGivenName("Joe");
+        joe.setFamilyName("Bloggs");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", "\"" + joe.getVersion() + "\"");
@@ -364,7 +367,8 @@ public class ScimUserEndpointsIntegrationTests {
     public void createUserTwiceFails() throws Exception {
         ScimUserInterface user = new ScimUser();
         user.setUserName(JOEL);
-        user.setName(new ScimName("Joel", "D'sa"));
+        user.setGivenName("Joel");
+        user.setFamilyName("D'sa");
         user.addEmail("joel@blah.com");
 
         @SuppressWarnings("rawtypes")
@@ -389,7 +393,8 @@ public class ScimUserEndpointsIntegrationTests {
 
         ScimUserInterface user = new ScimUser();
         user.setUserName(userName);
-        user.setName(new ScimName("Joel", "D'sa"));
+        user.setGivenName("Joel");
+        user.setFamilyName("D'sa");
         user.addEmail("joel@blah.com");
 
         @SuppressWarnings("rawtypes")
@@ -400,7 +405,8 @@ public class ScimUserEndpointsIntegrationTests {
 
         ScimUserInterface userDifferentCase = new ScimUser();
         userDifferentCase.setUserName(userNameDifferenceCase);
-        userDifferentCase.setName(new ScimName("Joel", "D'sa"));
+        userDifferentCase.setGivenName("Joe");
+        userDifferentCase.setFamilyName("D'sa");
         userDifferentCase.addEmail("joel@blah.com");
 
         response = client.postForEntity(serverRunning.getUrl(userEndpoint), userDifferentCase, Map.class);

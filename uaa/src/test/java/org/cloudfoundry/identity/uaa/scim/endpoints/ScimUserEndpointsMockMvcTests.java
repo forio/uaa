@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.cloudfoundry.identity.uaa.oauth.client.ClientDetailsModification;
 import org.cloudfoundry.identity.uaa.scim.dao.common.ScimUserProvisioning;
-import org.cloudfoundry.identity.uaa.scim.domain.common.ScimName;
 import org.cloudfoundry.identity.uaa.scim.domain.common.ScimUserInterface;
 import org.cloudfoundry.identity.uaa.scim.domain.standard.ScimUser;
 import org.cloudfoundry.identity.uaa.test.DefaultIntegrationTestConfig;
@@ -44,7 +43,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.googlecode.flyway.core.Flyway;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -53,8 +51,6 @@ import com.googlecode.flyway.core.Flyway;
 public class ScimUserEndpointsMockMvcTests {
 
     @Autowired WebApplicationContext webApplicationContext;
-    @Autowired FilterChainProxy springSecurityFilterChain;
-    @Autowired Flyway flyway;
 
     private MockMvc mockMvc;
     private String scimToken;
@@ -63,7 +59,6 @@ public class ScimUserEndpointsMockMvcTests {
     @Before
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(springSecurityFilterChain)
                 .build();
 
         TestClient testClient = new TestClient(mockMvc);
@@ -81,7 +76,8 @@ public class ScimUserEndpointsMockMvcTests {
         String email = "joe@"+generator.generate().toLowerCase()+".com";
         ScimUserInterface user = new ScimUser();
         user.setUserName("JOE");
-        user.setName(new ScimName("Joe", "User"));
+        user.setGivenName("Joe");
+        user.setFamilyName("User");
         user.addEmail(email);
 
         byte[] requestBody = new ObjectMapper().writeValueAsBytes(user);
@@ -127,7 +123,8 @@ public class ScimUserEndpointsMockMvcTests {
         user = usersRepository.createUser(user, "password");
 
         user.setUserName("ou");
-        user.setName(new ScimName("Joe", "Smith"));
+        user.setGivenName("Joe");
+        user.setFamilyName("Smith");
 
         MockHttpServletRequestBuilder put = MockMvcRequestBuilders.put("/Users/" + user.getId())
                 .header("Authorization", "Bearer " + scimToken)
